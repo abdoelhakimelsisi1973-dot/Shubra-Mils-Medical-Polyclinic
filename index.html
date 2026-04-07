@@ -277,6 +277,18 @@
             border-radius: 8px;
         }
 
+        .cancel-note {
+            text-align: center;
+            font-size: 20px;
+            font-weight: 700;
+            color: #c0392b;
+            margin-top: 12px;
+            background-color: #fff3f3;
+            padding: 12px;
+            border-radius: 8px;
+            border: 2px solid #e74c3c;
+        }
+
         /* التوافق مع الموبايل */
         @media (max-width: 1100px) {
             .main-wrapper {
@@ -364,7 +376,7 @@
 
             <div class="form-group">
                 <label>اسم المريض:</label>
-                <input type="text" name="patientName" id="pName" required placeholder="الاسم ثلاثي المريض">
+                <input type="text" name="patientName" id="pName" required placeholder="الاسم ثلاثي المريض" autocomplete="off">
             </div>
 
             <div class="form-group">
@@ -408,6 +420,7 @@
                 <span class="booking-num" id="b-num">0</span>
             </div>
             <p class="success-note">يرجى تصوير الشاشة وإظهارها للاستقبال عند الحضور للمجمع.</p>
+            <p class="cancel-note">سيتم الغاء الحجز عند انتهاء وقت العيادة</p>
         </div>
     </div>
 
