@@ -10,10 +10,9 @@
             --primary-color: #00bcd4; 
             --primary-dark: #0097a7;
             --bg-body: #e0f7fa; 
-            --accent-color: #ffffff; 
-            --text-main: #0a2529; 
-            --text-muted: #264653; 
             --success-color: #26a69a;
+            --text-main: #0a2529;
+            --card-shadow: 0 10px 25px rgba(0,0,0,0.05);
         }
 
         body {
@@ -21,35 +20,17 @@
             background-color: var(--bg-body);
             margin: 0;
             padding: 20px;
-            color: var(--text-main);
             display: flex;
-            align-items: center;
             justify-content: center;
             min-height: 100vh;
         }
 
         .main-wrapper {
             display: grid;
-            grid-template-columns: 280px 1fr 280px;
-            gap: 25px;
-            max-width: 1300px;
+            grid-template-columns: 300px 1fr 300px;
+            gap: 20px;
+            max-width: 1400px;
             width: 100%;
-            margin: 0 auto;
-            align-items: start;
-        }
-
-        .card-base {
-            background: #ffffff;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.03);
-            padding: 25px;
-            border: 1px solid rgba(0,0,0,0.03);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .card-base:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.06);
         }
 
         .side-panel {
@@ -57,100 +38,42 @@
             border-radius: 20px;
             padding: 25px;
             height: fit-content;
-        }
-
-        .side-panel h3 {
-            color: var(--primary-color);
-            border-right: 4px solid var(--primary-color);
-            padding-right: 15px;
-            font-size: 18px;
-            font-weight: 700;
-            margin-top: 0;
-            margin-bottom: 20px;
-        }
-
-        .side-panel ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .side-panel li {
-            font-size: 14px;
-            line-height: 1.7;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-        }
-
-        .side-panel li svg {
-            width: 18px;
-            height: 18px;
-            margin-left: 10px;
-            color: var(--primary-color);
+            box-shadow: var(--card-shadow);
         }
 
         .container {
             background: #ffffff;
             border-radius: 20px;
             border-top: 6px solid var(--primary-color);
+            padding: 35px;
             text-align: center;
-            padding: 40px;
-        }
-
-        .logo-wrapper {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px auto;
+            box-shadow: var(--card-shadow);
         }
 
         .main-logo {
-            width: 150px; 
-            height: 150px;
-            object-fit: cover;
-            border-radius: 50%;
-            border: 3px solid var(--primary-color);
+            width: 130px; 
+            height: 130px; 
+            border-radius: 50%; 
+            border: 3px solid var(--primary-color); 
             margin-bottom: 15px;
+            object-fit: cover;
         }
         
-        .container h2 {
-            margin: 0 0 5px 0;
-            color: var(--primary-color);
-            font-size: 26px;
-            font-weight: 700;
-        }
+        h2 { color: var(--primary-color); margin: 10px 0; font-weight: 700; }
+        .subtitle { color: #666; font-size: 15px; margin-bottom: 30px; }
 
-        .subtitle {
-            color: var(--text-muted);
-            font-size: 15px;
-            margin-bottom: 35px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-            text-align: right;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            font-size: 15px;
-        }
-
+        .form-group { margin-bottom: 20px; text-align: right; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 14px; }
+        
         input, select {
             width: 100%;
-            padding: 14px 18px;
+            padding: 14px;
             border: 1.5px solid #e2e8f0;
             border-radius: 12px;
-            font-family: 'Tajawal', sans-serif;
+            font-family: 'Tajawal';
             font-size: 16px;
             box-sizing: border-box;
-            transition: all 0.2s;
+            transition: 0.3s;
         }
 
         input:focus, select:focus {
@@ -159,67 +82,43 @@
             box-shadow: 0 0 0 4px rgba(0, 188, 212, 0.1);
         }
 
-        button.submit-btn {
+        .submit-btn {
             width: 100%;
-            padding: 18px;
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
             color: white;
             border: none;
             border-radius: 12px;
             font-size: 18px;
             font-weight: 700;
             cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0, 188, 212, 0.2);
+            transition: 0.3s;
         }
 
         #success-msg {
             display: none;
-            text-align: right;
-            border: 2px solid var(--success-color);
+            background: #f0fff4;
             padding: 30px;
             border-radius: 20px;
-            background: #f0fff4;
-        }
-
-        .booking-num-wrapper {
-            text-align: center;
-            margin: 20px 0;
+            border: 2px solid var(--success-color);
+            margin-top: 20px;
         }
 
         .booking-num {
-            font-size: 60px;
+            font-size: 55px;
             color: var(--success-color);
             font-weight: 800;
             display: block;
+            margin: 10px 0;
         }
 
-        .cancel-note {
-            text-align: center;
-            font-size: 18px;
-            font-weight: 700;
-            color: #c0392b;
-            background-color: #fff3f3;
-            padding: 12px;
-            border-radius: 8px;
-            border: 2px solid #e74c3c;
-        }
-
-        .loader {
-            display: none;
-            width: 30px;
-            height: 30px;
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid var(--primary-color);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 25px auto;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .info-list { list-style: none; padding: 0; margin: 0; }
+        .info-list li { font-size: 14px; margin-bottom: 12px; line-height: 1.6; display: flex; align-items: center; }
+        .info-list li::before { content: "✅"; margin-left: 10px; font-size: 12px; }
 
         @media (max-width: 1100px) {
             .main-wrapper { grid-template-columns: 1fr; }
             .container { order: 1; }
-            .side-panel { order: 2; }
         }
     </style>
 </head>
@@ -227,30 +126,30 @@
 
 <div class="main-wrapper">
     <div class="side-panel">
-        <h3>لماذا تختارنا؟ ✨</h3>
-        <ul>
-            <li><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg><span>نخبة من الأطباء المتخصصين</span></li>
-            <li><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg><span>أحدث الأجهزة الطبية</span></li>
-            <li><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg><span>طوارئ ومعمل 24 ساعة 🧪🚑</span></li>
+        <h3 style="color:var(--primary-color)">خدماتنا المتميزة ✨</h3>
+        <ul class="info-list">
+            <li>الطوارئ متوفرة 24 ساعة يومياً 🚑</li>
+            <li>المعمل متوفر 24 ساعة لخدمتك 🧪</li>
+            <li>نخبة من الأطباء المتخصصين ✅</li>
+            <li>أحدث الأجهزة الطبية ✅</li>
+            <li>رعاية متكاملة طوال الأسبوع ✅</li>
         </ul>
     </div>
 
     <div class="container">
-        <div class="logo-wrapper">
-            <img src="logo.png" alt="مجمع شبراملس الطبي" class="main-logo">
-        </div>
+        <img src="logo.png" alt="Logo" class="main-logo">
         <h2>مجمع شبراملس الطبي</h2>
         <p class="subtitle">نظام الحجز الإلكتروني الذكي</p>
 
-        <form id="booking-form">
+        <form id="booking-form" autocomplete="off">
             <div class="form-group">
                 <label>اسم المريض:</label>
-                <input type="text" name="patientName" id="pName" required placeholder="الاسم ثلاثي المريض" autocomplete="off">
+                <input type="text" id="pName" name="patientName" required placeholder="الاسم ثلاثي المريض" autocomplete="off">
             </div>
 
             <div class="form-group">
                 <label>يوم الحجز:</label>
-                <select name="bookingDay" id="bDay" required onchange="updateSpecialties()">
+                <select id="bDay" name="bookingDay" required onchange="updateSpecialties()">
                     <option value="">اختر اليوم...</option>
                     <option value="السبت">السبت</option>
                     <option value="الأحد">الأحد</option>
@@ -263,94 +162,56 @@
             </div>
 
             <div class="form-group">
-                <label>العيادة المتاحة:</label>
-                <select name="specialty" id="specialty" required onchange="updateDoctors()">
+                <label>العيادة:</label>
+                <select id="specialty" name="specialty" required onchange="updateDoctors()">
                     <option value="">اختر اليوم أولاً...</option>
                 </select>
             </div>
 
             <div class="form-group">
-                <label>الطبيب / الخدمة:</label>
-                <select name="doctorName" id="doctorName" required>
+                <label>الطبيب:</label>
+                <select id="doctorName" name="doctorName" required>
                     <option value="">اختر العيادة أولاً...</option>
                 </select>
             </div>
 
             <button type="submit" class="submit-btn" id="btn">تأكيد الحجز الآن</button>
-            <div class="loader" id="loader"></div>
+            <p id="loader" style="display:none; color:var(--primary-color)">جاري إرسال حجزك...</p>
         </form>
 
         <div id="success-msg">
-            <h3>تم الحجز بنجاح ✅</h3>
-            <p><b>المريض:</b> <span id="res-name"></span></p>
-            <p><b>الموعد:</b> <span id="res-day"></span> - <span id="res-doc"></span></p>
-            <div class="booking-num-wrapper">
-                <span style="font-size: 14px; color: #666;">رقم الحجز الخاص بك اليوم</span>
+            <h3 style="color:var(--success-color)">تم الحجز بنجاح ✅</h3>
+            <p>المريض: <b id="res-name"></b></p>
+            <p>الموعد: <b id="res-day"></b> - <b id="res-doc"></b></p>
+            <div style="margin:15px 0">
+                <span style="font-size:13px; color:#666">رقم الحجز اليومي</span>
                 <span class="booking-num" id="b-num">0</span>
             </div>
-            <p class="cancel-note">سيتم إلغاء الحجز عند انتهاء وقت العيادة</p>
+            <p style="color:red; font-size:13px; font-weight:bold">سيتم فتح واتساب تلقائياً لتأكيد الحجز</p>
         </div>
     </div>
 
     <div class="side-panel">
-        <h3>📍 موقعنا واتصالنا</h3>
-        <p><b>العنوان:</b> شبراملس – امتداد شارع السوق</p>
-        <p><b>واتساب:</b> 01020580002</p>
+        <h3 style="color:var(--primary-color)">📍 العنوان والاتصال</h3>
+        <p style="font-size:14px">شبراملس – امتداد شارع السوق - أعلى مسجد عباد الرحمن</p>
+        <hr style="border:0; border-top:1px solid #eee">
+        <p style="font-size:13px">🟢 واتساب: 01020580002</p>
+        <p style="font-size:13px">📲 موبايل: 01122593433</p>
+        <p style="font-size:13px">📞 أرضي: 0404650337</p>
+        <p style="font-size:13px">📞 أرضي: 0404658010</p>
     </div>
 </div>
 
 <script>
-const constantServices = {
-    "طوارئ 24 ساعة": ["طبيب الطوارئ المناوب"],
-    "معمل التحاليل": ["أخصائي التحاليل (خدمة 24 ساعة)"]
-};
-
+const constantServices = { "طوارئ 24 ساعة": ["طبيب الطوارئ"], "معمل التحاليل": ["أخصائي التحاليل"] };
 const scheduleData = {
-    "السبت": { 
-        "أسنان": ["د. رنا حمودة (04:00 عصراً)", "د. خالد الداهس (09:00 مساءً)"], 
-        "مسالك بولية": ["د. علي منتصر (07:00 مساءً)"], 
-        "أنف وأذن وحنجرة": ["د. محمد هيكل (07:00 مساءً)"], 
-        "طب وجراحة العيون": ["محمد مجدي سعده (02:00 ظهراً)"] 
-    },
-    "الأحد": { 
-        "قلب وأوعية": ["د. أحمد مسعد الغلبان (06:00 مساءً)"], 
-        "أنف وأذن وحنجرة": ["د. محمد هيكل (07:00 مساءً)"], 
-        "أسنان": ["د. محمد علاء (03:00 مساءً)", "د. محمود دهب (08:00 مساءً)"], 
-        "الرمد وجراحات العيون": ["د. خالد أحمد الشيخ (05:00 عصراً)"], 
-        "مسالك بولية": ["د. علي منتصر (07:00 مساءً)"], 
-        "عظام وجراحة العمود الفقري": ["إبراهيم مطاوع (04:00 عصراً)"] 
-    },
-    "الإثنين": { 
-        "نساء وتوليد": ["د. هيام السمراوي (01:00 ظهراً)"], 
-        "جراحة مخ وأعصاب": ["د. محمد سلام (08:00 مساءً)"], 
-        "أسنان": ["د. رنا حمودة (04:00 عصراً)", "د. خالد الداهس (09:00 مساءً)"], 
-        "مسالك بولية": ["د. علي منتصر (07:00 مساءً)"] 
-    },
-    "الثلاثاء": { 
-        "أنف وأذن وحنجرة": ["د. سناء الحماقي (04:00 مساءً)"], 
-        "نفسية وعصبية": ["د. آلاء الحوت (06:00 مساءً)"], 
-        "أسنان": ["د. محمد علاء (03:00 مساءً)", "د. محمود دهب (08:00 مساءً)"], 
-        "مسالك بولية": ["د. علي منتصر (07:00 مساءً)"], 
-        "عظام وجراحة العمود الفقري": ["إبراهيم مطاوع (04:00 عصراً)"], 
-        "طب وجراحة العيون": ["محمد مجدي سعده (02:00 ظهراً)"] 
-    },
-    "الأربعاء": { 
-        "أسنان": ["د. رنا حمودة (04:00 عصراً)", "د. خالد الداهس (09:00 مساءً)"], 
-        "قلب وأوعية": ["د. أحمد مسعد الغلبان (06:00 مساءً)"], 
-        "مسالك بولية": ["د. علي منتصر (07:00 مساءً)"], 
-        "أطفال وحديثي الولادة": ["د. جينا عبدالله الشافعي (06:00 مساءً)"] 
-    },
-    "الخميس": { 
-        "قلب وأوعية": ["د. أحمد مسعد الغلبان (06:00 مساءً)"], 
-        "أنف وأذن وحنجرة": ["د. محمد هيكل (07:00 مساءً)"], 
-        "أسنان": ["د. محمد علاء (03:00 مساءً)", "د. محمود دهب (08:00 مساءً)"], 
-        "مسالك بولية": ["د. علي منتصر (07:00 مساءً)"], 
-        "عظام وجراحة العمود الفقري": ["إبراهيم مطاوع (04:00 عصراً)"], 
-        "طب وجراحة العيون": ["محمد مجدي سعده (02:00 ظهراً)"] 
-    },
-    "الجمعة": { 
-        "باطنة ومناظير": ["د. عزيز بدير (02:00 ظهراً)"] 
-    }
+    "السبت": { "أسنان": ["د. رنا حمودة", "د. خالد الداهس"], "مسالك": ["د. علي منتصر"], "أنف وأذن": ["د. محمد هيكل"], "عيون": ["د. محمد مجدي"] },
+    "الأحد": { "قلب": ["د. أحمد مسعد"], "أنف وأذن": ["د. محمد هيكل"], "أسنان": ["د. محمد علاء", "د. محمود دهب"], "رمد": ["د. خالد الشيخ"], "عظام": ["د. إبراهيم مطاوع"] },
+    "الإثنين": { "نساء": ["د. هيام السمراوي"], "مخ وأعصاب": ["د. محمد سلام"], "أسنان": ["د. رنا حمودة"], "مسالك": ["د. علي منتصر"] },
+    "الثلاثاء": { "أنف وأذن": ["د. سناء الحماقي"], "نفسية": ["د. آلاء الحوت"], "أسنان": ["د. محمد علاء"], "عظام": ["د. إبراهيم مطاوع"] },
+    "الأربعاء": { "أسنان": ["د. رنا حمودة"], "قلب": ["د. أحمد مسعد"], "أطفال": ["د. جينا عبدالله"] },
+    "الخميس": { "قلب": ["د. أحمد مسعد"], "أنف وأذن": ["د. محمد هيكل"], "أسنان": ["د. محمود دهب"], "عظام": ["د. إبراهيم مطاوع"] },
+    "الجمعة": { "باطنة": ["د. عزيز بدير"] }
 };
 
 function updateSpecialties() {
@@ -359,9 +220,7 @@ function updateSpecialties() {
     specSelect.innerHTML = '<option value="">اختر العيادة...</option>';
     if(day) {
         Object.keys(constantServices).forEach(s => specSelect.add(new Option(s, s)));
-        if(scheduleData[day]) {
-            Object.keys(scheduleData[day]).forEach(s => specSelect.add(new Option(s, s)));
-        }
+        if(scheduleData[day]) Object.keys(scheduleData[day]).forEach(s => specSelect.add(new Option(s, s)));
     }
 }
 
@@ -370,29 +229,20 @@ function updateDoctors() {
     const spec = document.getElementById('specialty').value;
     const docSelect = document.getElementById('doctorName');
     docSelect.innerHTML = '<option value="">اختر الطبيب...</option>';
-    if(constantServices[spec]) {
-        constantServices[spec].forEach(d => docSelect.add(new Option(d, d)));
-    } else if(scheduleData[day] && scheduleData[day][spec]) {
-        scheduleData[day][spec].forEach(d => docSelect.add(new Option(d, d)));
-    }
+    let list = constantServices[spec] || (scheduleData[day] ? scheduleData[day][spec] : null);
+    if(list) list.forEach(d => docSelect.add(new Option(d, d)));
 }
 
 function getDailyCounter() {
     const now = new Date();
-    const todayStr = now.toLocaleDateString();
-    let storedDate = localStorage.getItem('bookingDate');
-    let counter = parseInt(localStorage.getItem('dailyBookingCounter')) || 0;
-
-    if (storedDate !== todayStr) {
-        counter = 1;
-        localStorage.setItem('bookingDate', todayStr);
-    } else {
-        counter++;
-    }
-    localStorage.setItem('dailyBookingCounter', counter);
-    return counter;
+    const today = now.toLocaleDateString();
+    let count = (localStorage.getItem('bDate') === today) ? parseInt(localStorage.getItem('bCount')) + 1 : 1;
+    localStorage.setItem('bDate', today);
+    localStorage.setItem('bCount', count);
+    return count;
 }
 
+// الرابط القديم الذي يعمل حالياً
 const scriptURL = 'https://script.google.com/macros/s/AKfycbwzVo2w7Jjzjo5icuSgXV4fj6BJGu2gdcVSZBHcss6heWriEXtGt7AMoFJTpnYrfvdC-w/exec';
 const form = document.getElementById('booking-form');
 
@@ -400,28 +250,34 @@ form.addEventListener('submit', e => {
     e.preventDefault();
     document.getElementById('btn').style.display = 'none';
     document.getElementById('loader').style.display = 'block';
-    
+
+    const pName = document.getElementById('pName').value;
+    const bDay = document.getElementById('bDay').value;
+    const specialty = document.getElementById('specialty').value;
+    const doctor = document.getElementById('doctorName').value;
+
     fetch(scriptURL, { method: 'POST', body: new FormData(form)})
-    .then(res => res.text())
-    .then(id => {
+    .then(() => {
         document.getElementById('loader').style.display = 'none';
         form.style.display = 'none';
-        document.getElementById('res-name').innerText = document.getElementById('pName').value;
-        document.getElementById('res-day').innerText = document.getElementById('bDay').value;
-        document.getElementById('res-doc').innerText = document.getElementById('doctorName').value;
+        const dNum = getDailyCounter();
         
-        const dailyNum = getDailyCounter();
-        document.getElementById('b-num').innerText = dailyNum;
-        
+        document.getElementById('res-name').innerText = pName;
+        document.getElementById('res-day').innerText = bDay;
+        document.getElementById('res-doc').innerText = doctor;
+        document.getElementById('b-num').innerText = dNum;
         document.getElementById('success-msg').style.display = 'block';
+
+        const msg = `*حجز جديد من الموقع*📝%0A*الاسم:* ${pName}%0A*اليوم:* ${bDay}%0A*العيادة:* ${specialty}%0A*الدكتور:* ${doctor}%0A*رقم الحجز:* ${dNum}`;
+        
+        // فتح الرقمين المطلوبين بالترتيب
+        window.open(`https://wa.me/201122501159?text=${msg}`, '_blank');
+        setTimeout(() => {
+            window.open(`https://wa.me/201144758578?text=${msg}`, '_blank');
+        }, 1500);
     })
-    .catch(err => {
-        alert('حدث خطأ في الاتصال');
-        document.getElementById('btn').style.display = 'block';
-        document.getElementById('loader').style.display = 'none';
-    });
+    .catch(() => { alert('خطأ في الاتصال!'); document.getElementById('btn').style.display = 'block'; });
 });
 </script>
-
 </body>
 </html>
