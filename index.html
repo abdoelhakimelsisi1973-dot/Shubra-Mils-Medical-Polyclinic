@@ -7,7 +7,10 @@
 
     <meta property="og:title" content="حجوزات مجمع شبراملس الطبي">
     <meta property="og:description" content="احجز موعدك الآن بكل سهولة. طوارئ ومعمل 24 ساعة، ونخبة من أفضل الأطباء المتخصصين لخدمتك.">
-    <meta property="og:image" content="ضع_رابط_صورتك_هنا.jpg"> <meta property="og:url" content="ضع_رابط_موقعك_هنا"> <meta property="og:type" content="website">
+    <meta property="og:image" content="https://shubramels-complex.com/logo.png"> 
+    <meta property="og:url" content="رابط_موقعك_هنا">
+    <meta property="og:type" content="website">
+
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -15,7 +18,6 @@
             --primary-dark: #0097a7;
             --bg-body: #e0f7fa; 
             --success-color: #26a69a;
-            --text-main: #0a2529;
             --card-shadow: 0 10px 25px rgba(0,0,0,0.05);
         }
         body { font-family: 'Tajawal', sans-serif; background-color: var(--bg-body); margin: 0; padding: 20px; display: flex; justify-content: center; min-height: 100vh; }
@@ -24,15 +26,12 @@
         .container { background: #ffffff; border-radius: 20px; border-top: 6px solid var(--primary-color); padding: 35px; text-align: center; box-shadow: var(--card-shadow); }
         .main-logo { width: 130px; height: 130px; border-radius: 50%; border: 3px solid var(--primary-color); margin-bottom: 15px; object-fit: cover; }
         h2 { color: var(--primary-color); margin: 10px 0; font-weight: 700; }
-        .subtitle { color: #666; font-size: 15px; margin-bottom: 30px; }
         .form-group { margin-bottom: 20px; text-align: right; }
         label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 14px; }
         input, select { width: 100%; padding: 14px; border: 1.5px solid #e2e8f0; border-radius: 12px; font-family: 'Tajawal'; font-size: 16px; box-sizing: border-box; }
         .submit-btn { width: 100%; padding: 16px; background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); color: white; border: none; border-radius: 12px; font-size: 18px; font-weight: 700; cursor: pointer; }
         #success-msg { display: none; background: #f0fff4; padding: 30px; border-radius: 20px; border: 2px solid var(--success-color); margin-top: 20px; }
         .booking-num { font-size: 55px; color: var(--success-color); font-weight: 800; display: block; }
-        .info-list { list-style: none; padding: 0; margin: 0; }
-        .info-list li { font-size: 14px; margin-bottom: 12px; line-height: 1.6; display: flex; align-items: center; }
         @media (max-width: 1100px) { .main-wrapper { grid-template-columns: 1fr; } }
     </style>
 </head>
@@ -41,40 +40,46 @@
 <div class="main-wrapper">
     <div class="side-panel">
         <h3 style="color:var(--primary-color)">خدماتنا المتميزة ✨</h3>
-        <ul class="info-list">
-            <li>الطوارئ متوفرة 24 ساعة يومياً 🚑</li>
-            <li>المعمل متوفر 24 ساعة لخدمتك 🧪</li>
-            <li>نخبة من الأطباء المتخصصين ✅</li>
-            <li>أحدث الأجهزة الطبية ✅</li>
-            <li>رعاية متكاملة طوال الأسبوع ✅</li>
+        <ul style="list-style:none; padding:0; font-size:14px; line-height:2;">
+            <li>🚑 طوارئ متوفرة 24 ساعة</li>
+            <li>🧪 المعمل متوفر 24 ساعة</li>
+            <li>✅ نخبة من الأطباء المتخصصين</li>
+            <li>🏥 رعاية طبية متكاملة</li>
         </ul>
     </div>
 
     <div class="container">
         <img src="logo.png" alt="Logo" class="main-logo">
         <h2>مجمع شبراملس الطبي</h2>
-        <p class="subtitle">نظام الحجز الإلكتروني الذكي</p>
-        <form id="booking-form" autocomplete="off">
+        <form id="booking-form">
             <div class="form-group">
                 <label>اسم المريض:</label>
-                <input type="text" id="pName" name="patientName" required placeholder="الاسم ثلاثي المريض" autocomplete="off">
+                <input type="text" id="pName" name="patientName" required placeholder="الاسم ثلاثي المريض">
             </div>
             <div class="form-group">
                 <label>يوم الحجز:</label>
                 <select id="bDay" name="bookingDay" required onchange="updateSpecialties()">
                     <option value="">اختر اليوم...</option>
-                    <option value="السبت">السبت</option><option value="الأحد">الأحد</option><option value="الإثنين">الإثنين</option>
-                    <option value="الثلاثاء">الثلاثاء</option><option value="الأربعاء">الأربعاء</option><option value="الخميس">الخميس</option>
+                    <option value="السبت">السبت</option>
+                    <option value="الأحد">الأحد</option>
+                    <option value="الإثنين">الإثنين</option>
+                    <option value="الثلاثاء">الثلاثاء</option>
+                    <option value="الأربعاء">الأربعاء</option>
+                    <option value="الخميس">الخميس</option>
                     <option value="الجمعة">الجمعة</option>
                 </select>
             </div>
             <div class="form-group">
                 <label>العيادة:</label>
-                <select id="specialty" name="specialty" required onchange="updateDoctors()"><option value="">اختر اليوم أولاً...</option></select>
+                <select id="specialty" name="specialty" required onchange="updateDoctors()">
+                    <option value="">اختر اليوم أولاً...</option>
+                </select>
             </div>
             <div class="form-group">
                 <label>الطبيب:</label>
-                <select id="doctorName" name="doctorName" required><option value="">اختر العيادة أولاً...</option></select>
+                <select id="doctorName" name="doctorName" required>
+                    <option value="">اختر العيادة أولاً...</option>
+                </select>
             </div>
             <button type="submit" class="submit-btn" id="btn">تأكيد الحجز الآن</button>
             <p id="loader" style="display:none; color:var(--primary-color)">جاري إرسال حجزك...</p>
@@ -94,24 +99,64 @@
 
     <div class="side-panel">
         <h3 style="color:var(--primary-color)">📍 العنوان والاتصال</h3>
-        <p style="font-size:14px">شبراملس – امتداد شارع السوق - أعلى مسجد عباد الرحمن</p>
-        <hr style="border:0; border-top:1px solid #eee">
+        <p style="font-size:14px">شبراملس – أعلى مسجد عباد الرحمن</p>
         <p style="font-size:13px">🟢 واتساب: 01020580002</p>
         <p style="font-size:13px">📲 موبايل: 01122593433</p>
-        <p style="font-size:13px">📞 أرضي: 0404650337</p>
     </div>
 </div>
 
 <script>
-const constantServices = { "طوارئ 24 ساعة": ["طبيب الطوارئ"], "معمل التحاليل": ["أخصائي التحاليل"] };
+const constantServices = { 
+    "طوارئ 24 ساعة": ["طبيب الطوارئ"], 
+    "معمل التحاليل": ["د. ثريا القاضي (أخصائية تحاليل)", "د. فريال محمود رزق (أخصائية تحاليل)"] 
+};
+
 const scheduleData = {
-    "السبت": { "أسنان": ["د. رنا حمودة (04:00 عصراً)", "د. خالد الداهس (09:00 مساءً)"], "مسالك بولية": ["د. علي منتصر (07:00 مساءً)"], "أنف وأذن وحنجرة": ["د. محمد هيكل (07:00 مساءً)"], "طب وجراحة العيون": ["أخصائي محمد مجدي سعده (02:00 ظهراً)"] },
-    "الأحد": { "قلب وأوعية": ["د. أحمد مسعد الغلبان (06:00 مساءً)"], "أنف وأذن وحنجرة": ["د. محمد هيكل (07:00 مساءً)"], "أسنان": ["د. محمد علاء (03:00 مساءً)", "د. محمود دهب (08:00 مساءً)"], "الرمد وجراحات العيون": ["أخصائي د. خالد أحمد الشيخ (05:00 عصراً)"], "مسالك بولية": ["د. علي منتصر (07:00 مساءً)"], "عظام وجراحة العمود الفقري": ["أخصائي إبراهيم مطاوع (04:00 عصراً)"] },
-    "الإثنين": { "نساء وتوليد": ["د. هيام السمراوي (01:00 ظهراً)"], "جراحة مخ وأعصاب": ["د. محمد سلام (08:00 مساءً)"], "أسنان": ["د. رنا حمودة (04:00 عصراً)"], "مسالك بولية": ["د. علي منتصر (07:00 مساءً)"] },
-    "الثلاثاء": { "أنف وأذن": ["د. سناء الحماقي (04:00 مساءً)"], "نفسية وعصبية": ["د. آلاء الحوت (06:00 مساءً)"], "أسنان": ["د. محمد علاء (03:00 مساءً)"], "مسالك بولية": ["د. علي منتصر (07:00 مساءً)"], "عظام وجراحة العمود الفقري": ["أخصائي إبراهيم مطاوع (04:00 عصراً)"], "طب وجراحة العيون": ["أخصائي محمد مجدي سعده (02:00 ظهراً)"] },
-    "الأربعاء": { "أسنان": ["د. رنا حمودة (04:00 عصراً)"], "قلب وأوعية": ["د. أحمد مسعد الغلبان (06:00 مساءً)"], "مسالك بولية": ["د. علي منتصر (07:00 مساءً)"], "اطفال وحديثي الولاده": ["د. جينا عبدالله الشافعي (06:00 مساءً)"] },
-    "الخميس": { "قلب وأوعية": ["د. أحمد مسعد الغلبان (06:00 مساءً)"], "أنف وأذن وحنجرة": ["د. محمد هيكل (07:00 مساءً)"], "مسالك بولية": ["د. علي منتصر (07:00 مساءً)"], "عظام وجراحة العمود الفقري": ["أخصائي إبراهيم مطاوع (04:00 عصراً)"], "طب وجراحة العيون": ["أخصائي محمد مجدي سعده (02:00 ظهراً)"] },
-    "الجمعة": { "باطنة ومناظير": ["د. عزيز بدير (02:00 ظهراً)"] }
+    "السبت": { 
+        "أسنان": ["د. رنا حمودة (04:00 عصراً)", "د. خالد الداهس (09:00 مساءً)"], 
+        "مسالك بولية": ["د. علي منتصر (07:00 مساءً)"], 
+        "أنف وأذن وحنجرة": ["د. محمد هيكل (07:00 مساءً)"], 
+        "طب وجراحة العيون": ["أخصائي محمد مجدي سعده (02:00 ظهراً)"] 
+    },
+    "الأحد": { 
+        "قلب وأوعية": ["د. أحمد مسعد الغلبان (06:00 مساءً)"], 
+        "أنف وأذن وحنجرة": ["د. محمد هيكل (07:00 مساءً)"], 
+        "أسنان": ["د. محمد علاء (03:00 مساءً)", "د. محمود دهب (08:00 مساءً)"], 
+        "الرمد وجراحات العيون": ["أخصائي د. خالد أحمد الشيخ (05:00 عصراً)"], 
+        "مسالك بولية": ["د. علي منتصر (07:00 مساءً)"], 
+        "عظام وجراحة العمود الفقري": ["أخصائي إبراهيم مطاوع (04:00 عصراً)"] 
+    },
+    "الإثنين": { 
+        "نساء وتوليد": ["د. هيام السمراوي (01:00 ظهراً)"], 
+        "جراحة مخ وأعصاب": ["د. محمد سلام (08:00 مساءً)"], 
+        "أسنان": ["د. رنا حمودة (04:00 عصراً)", "د. خالد الداهس (09:00 مساءً)"], 
+        "مسالك بولية": ["د. علي منتصر (07:00 مساءً)"] 
+    },
+    "الثلاثاء": { 
+        "أنف وأذن": ["د. سناء الحماقي (04:00 مساءً)"], 
+        "نفسية وعصبية": ["د. آلاء الحوت (06:00 مساءً)"], 
+        "أسنان": ["د. محمد علاء (03:00 مساءً)", "د. محمود دهب (08:00 مساءً)"], 
+        "مسالك بولية": ["د. علي منتصر (07:00 مساءً)"], 
+        "عظام وجراحة العمود الفقري": ["أخصائي إبراهيم مطاوع (04:00 عصراً)"], 
+        "طب وجراحة العيون": ["أخصائي محمد مجدي سعده (02:00 ظهراً)"] 
+    },
+    "الأربعاء": { 
+        "أسنان": ["د. رنا حمودة (04:00 عصراً)", "د. خالد الداهس (09:00 مساءً)"], 
+        "قلب وأوعية": ["د. أحمد مسعد الغلبان (06:00 مساءً)"], 
+        "مسالك بولية": ["د. علي منتصر (07:00 مساءً)"], 
+        "اطفال وحديثي الولاده": ["د. جينا عبدالله الشافعي (06:00 مساءً)"] 
+    },
+    "الخميس": { 
+        "قلب وأوعية": ["د. أحمد مسعد الغلبان (06:00 مساءً)"], 
+        "أنف وأذن وحنجرة": ["د. محمد هيكل (07:00 مساءً)"], 
+        "أسنان": ["د. محمد علاء (03:00 مساءً)", "د. محمود دهب (08:00 مساءً)"], 
+        "مسالك بولية": ["د. علي منتصر (07:00 مساءً)"], 
+        "عظام وجراحة العمود الفقري": ["أخصائي إبراهيم مطاوع (04:00 عصراً)"], 
+        "طب وجراحة العيون": ["أخصائي محمد مجدي سعده (02:00 ظهراً)"] 
+    },
+    "الجمعة": { 
+        "باطنة ومناظير": ["د. عزيز بدير (استشاري كبد وجهاز هضمي) (02:00 ظهراً)"] 
+    }
 };
 
 function updateSpecialties() {
@@ -160,6 +205,7 @@ form.addEventListener('submit', e => {
         document.getElementById('loader').style.display = 'none';
         form.style.display = 'none';
         const dNum = getDailyCounter();
+        
         document.getElementById('res-name').innerText = pName;
         document.getElementById('res-day').innerText = bDay;
         document.getElementById('res-doc').innerText = doctor;
@@ -167,9 +213,12 @@ form.addEventListener('submit', e => {
         document.getElementById('success-msg').style.display = 'block';
 
         const msg = `*حجز جديد من الموقع*📝%0A*الاسم:* ${pName}%0A*اليوم:* ${bDay}%0A*العيادة:* ${specialty}%0A*الدكتور:* ${doctor}%0A*رقم الحجز:* ${dNum}`;
-        setTimeout(() => { window.location.href = `https://wa.me/201122501159?text=${msg}`; }, 800);
+        
+        setTimeout(() => {
+            window.location.href = `https://wa.me/201122501159?text=${msg}`;
+        }, 800);
     })
-    .catch(() => { alert('خطأ!'); document.getElementById('btn').style.display = 'block'; });
+    .catch(() => { alert('خطأ في الاتصال!'); document.getElementById('btn').style.display = 'block'; });
 });
 </script>
 </body>
