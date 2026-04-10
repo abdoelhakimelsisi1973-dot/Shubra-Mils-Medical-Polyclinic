@@ -38,7 +38,7 @@
             width: 100%; 
         }
 
-        /* زيادة عرض حركة الشريط المتحرك */
+        /* تعديل الاتجاه ليمشي من الشمال لليمين */
         .ticker-wrapper {
             background: var(--offer-bg);
             border: 1px solid var(--offer-text);
@@ -50,12 +50,12 @@
             height: 16px;
             display: flex;
             align-items: center;
-            width: 100%; /* ضمان استغلال العرض الكامل */
+            width: 100%;
         }
 
         .ticker-text {
             display: inline-block;
-            padding-right: 100%;
+            padding-left: 100%; /* تغيير الحشو لجهة اليسار */
             animation: ticker 30s linear infinite;
             color: var(--offer-text);
             font-weight: 500;
@@ -67,9 +67,10 @@
             font-weight: 800;
         }
 
+        /* حركة من الشمال لليمين */
         @keyframes ticker {
-            0% { transform: translate3d(100%, 0, 0); }
-            100% { transform: translate3d(-100%, 0, 0); }
+            0% { transform: translate3d(-100%, 0, 0); }
+            100% { transform: translate3d(100%, 0, 0); }
         }
 
         .side-panel { 
