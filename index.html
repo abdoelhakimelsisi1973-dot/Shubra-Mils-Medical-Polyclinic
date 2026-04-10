@@ -35,7 +35,6 @@
             color: var(--text-dark);
         }
 
-        /* تنسيقات الشريط المتحرك */
         .news-ticker {
             position: absolute;
             top: 0;
@@ -68,7 +67,7 @@
             gap: 25px; 
             max-width: 1500px; 
             width: 100%; 
-            margin-top: 20px; /* لترك مسافة بسيطة للشريط العلوي */
+            margin-top: 20px;
         }
 
         .side-panel { 
@@ -166,9 +165,6 @@
             transition: all 0.3s ease;
         }
 
-        .submit-btn:hover { transform: scale(1.02); box-shadow: 0 8px 20px rgba(0,151,167,0.4); }
-        .cancel-btn:hover { background: var(--cancel-color); color: white; }
-
         #success-msg { display: none; animation: fadeIn 0.5s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -249,11 +245,11 @@
             <p style="font-size: 18px;">المريض: <b id="res-name"></b></p>
             <p style="font-size: 18px;">الموعد: <b id="res-day"></b> - <b id="res-doc"></b></p>
             <div style="margin:20px 0; padding: 20px; background: #f1f8e9; border-radius: 20px;">
-                <span style="font-size:16px; color:#555; display:block;">رقم حجزك اليوم هو</span>
+                <span style="font-size:16px; color:#555; display:block;">رقم حجزك في العيادة هو</span>
                 <span class="booking-num" id="b-num">0</span>
             </div>
             <p style="color:var(--cancel-color); font-weight:bold;">يرجى الحضور قبل الموعد بـ 15 دقيقة</p>
-            <p style="color:var(--cancel-color); font-weight:bold;">يرجى تصوير الشاشة و اظهارها لوظف الاستقبال</p>
+            <p style="color:var(--cancel-color); font-weight:bold;">يرجى تصوير الشاشة وإظهارها لموظف الاستقبال</p>
             <button onclick="location.reload()" class="cancel-btn" style="width:100%; margin-top:10px;">حجز جديد</button>
         </div>
     </div>
@@ -326,15 +322,26 @@ form.addEventListener('submit', e => {
     const pName = document.getElementById('pName').value;
     const bDay = document.getElementById('bDay').value;
     const doctor = document.getElementById('doctorName').value;
+    const spec = document.getElementById('specialty').value;
 
     fetch(scriptURL, { method: 'POST', body: new FormData(form)})
     .then(() => {
         document.getElementById('loader').style.display = 'none';
         form.style.display = 'none';
         
-        let count = (localStorage.getItem('bDate') === new Date().toLocaleDateString()) ? parseInt(localStorage.getItem('bCount')) + 1 : 1;
-        localStorage.setItem('bDate', new Date().toLocaleDateString());
-        localStorage.setItem('bCount', count);
+        const todayStr = new Date().toLocaleDateString();
+        let dailyCounts = {};
+        
+        if (localStorage.getItem('bDate') === todayStr) {
+            let stored = localStorage.getItem('dailyCounts');
+            if (stored) dailyCounts = JSON.parse(stored);
+        } else {
+            localStorage.setItem('bDate', todayStr);
+        }
+        
+        let count = (dailyCounts[spec] || 0) + 1;
+        dailyCounts[spec] = count;
+        localStorage.setItem('dailyCounts', JSON.stringify(dailyCounts));
 
         document.getElementById('res-name').innerText = pName;
         document.getElementById('res-day').innerText = bDay;
@@ -342,7 +349,7 @@ form.addEventListener('submit', e => {
         document.getElementById('b-num').innerText = count;
         document.getElementById('success-msg').style.display = 'block';
 
-        const msg = `*حجز جديد*📝%0A*المريض:* ${pName}%0A*اليوم:* ${bDay}%0A*الدكتور:* ${doctor}%0A*رقم الدور:* ${count}`;
+        const msg = `*حجز جديد*📝%0A*المريض:* ${pName}%0A*اليوم:* ${bDay}%0A*العيادة:* ${spec}%0A*الدكتور:* ${doctor}%0A*رقم الدور:* ${count}`;
         setTimeout(() => { window.location.href = `https://wa.me/201122501159?text=${msg}`; }, 1000);
     })
     .catch(() => { alert('حدث خطأ! يرجى المحاولة مرة أخرى.'); document.getElementById('btn').style.display = 'block'; });
