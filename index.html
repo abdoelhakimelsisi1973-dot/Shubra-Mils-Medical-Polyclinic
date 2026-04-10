@@ -5,24 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>حجوزات مجمع شبراملس الطبي</title>
 
+    <meta property="og:title" content="حجوزات مجمع شبراملس الطبي">
+    <meta property="og:description" content="احجز موعدك الآن بكل سهولة. طوارئ ومعمل 24 ساعة، ونخبة من أفضل الأطباء المتخصصين لخدمتك.">
+    <meta property="og:image" content="https://raw.githubusercontent.com/abdoelhakimelsisi1973-dot/Shubra-Mils-Medical-Polyclinic/main/logo.png"> 
+    <meta property="og:url" content="https://abdoelhakimelsisi1973-dot.github.io/Shubra-Mils-Medical-Polyclinic/">
+    <meta property="og:type" content="website">
+
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #0097a7; 
-            --accent-color: #00bcd4;
-            --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            --card-bg: rgba(255, 255, 255, 0.95);
+            --primary-color: #00bcd4; /* اللون الأزرق السماوي من image_1 */
+            --primary-dark: #0097a7;
+            --bg-body: #e0f7fa; /* لون خلفية مريح */
             --success-color: #2e7d32;
             --cancel-color: #d32f2f;
             --offer-bg: #fff3e0;
             --offer-text: #e65100;
-            --highlight: #d32f2f; /* لون التميز للعرض */
         }
 
         body { 
             font-family: 'Tajawal', sans-serif; 
-            background: var(--bg-gradient);
-            background-attachment: fixed;
+            background-color: var(--bg-body); 
             margin: 0; 
             padding: 10px; 
             display: flex; 
@@ -38,7 +41,7 @@
             width: 100%; 
         }
 
-        /* شريط نحيف جداً لضمان ظهور كامل الصفحة */
+        /* شريط العروض العلوي النحيف جداً (image_2) */
         .ticker-wrapper {
             background: var(--offer-bg);
             border: 1px solid var(--offer-text);
@@ -46,8 +49,8 @@
             margin-bottom: 8px;
             overflow: hidden;
             white-space: nowrap;
-            padding: 1px 5px;
-            height: 16px; /* أنحف ارتفاع ممكن */
+            padding: 2px 5px;
+            height: 16px;
             display: flex;
             align-items: center;
         }
@@ -55,16 +58,10 @@
         .ticker-text {
             display: inline-block;
             padding-right: 100%;
-            animation: ticker 20s linear infinite;
+            animation: ticker 25s linear infinite;
             color: var(--offer-text);
             font-weight: 500;
             font-size: 11px;
-        }
-
-        .highlight-text {
-            color: var(--highlight);
-            font-weight: 800;
-            text-decoration: underline;
         }
 
         @keyframes ticker {
@@ -73,38 +70,53 @@
         }
 
         .side-panel { 
-            background: var(--card-bg); 
+            background: #ffffff; 
             border-radius: 20px; 
             padding: 20px; 
             height: fit-content; 
-            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
         }
 
         .container { 
-            background: var(--card-bg); 
+            background: #ffffff; 
             border-radius: 25px; 
-            padding: 20px; 
+            padding: 25px; 
             text-align: center; 
-            box-shadow: 0 12px 35px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
             border-top: 5px solid var(--primary-color);
         }
 
-        .main-logo { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--accent-color); margin-bottom: 10px; }
-        
-        .form-group { margin-bottom: 15px; text-align: right; }
-        label { display: block; margin-bottom: 5px; font-weight: 700; color: var(--primary-color); font-size: 14px; }
-        
-        input, select { 
-            width: 100%; padding: 10px; border: 1.5px solid #cfd8dc; border-radius: 8px; 
-            font-family: 'Tajawal'; font-size: 14px; 
+        .main-logo { 
+            width: 110px; 
+            height: 110px; 
+            border-radius: 50%; 
+            border: 3px solid var(--primary-color); 
+            margin-bottom: 10px; 
         }
 
-        .button-group { display: flex; gap: 8px; margin-top: 15px; }
-        .submit-btn { flex: 2; padding: 12px; background: linear-gradient(45deg, var(--primary-color), var(--accent-color)); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 800; cursor: pointer; }
-        .cancel-btn { flex: 1; padding: 12px; background: #f5f5f5; color: var(--cancel-color); border: 1.5px solid var(--cancel-color); border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; }
+        h2 { color: var(--primary-color); font-size: 26px; font-weight: 800; margin: 0 0 15px 0; }
+        
+        .form-group { margin-bottom: 15px; text-align: right; }
+        label { display: block; margin-bottom: 5px; font-weight: 700; color: #333; font-size: 14px; }
+        
+        input, select { 
+            width: 100%; padding: 12px; border: 1.5px solid #e2e8f0; border-radius: 10px; 
+            font-family: 'Tajawal'; font-size: 14px; box-sizing: border-box; 
+        }
+
+        input:focus, select:focus { border-color: var(--primary-color); outline: none; }
+
+        .submit-btn { 
+            width: 100%; padding: 15px; 
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); 
+            color: white; border: none; border-radius: 10px; 
+            font-size: 17px; font-weight: 800; cursor: pointer; transition: all 0.3s; 
+        }
+
+        .submit-btn:hover { transform: scale(1.02); }
 
         .info-list { list-style: none; padding: 0; }
-        .info-list li { font-size: 16px; font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+        .info-list li { font-size: 15px; font-weight: 500; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
 
         @media (max-width: 1100px) { 
             .main-wrapper { grid-template-columns: 1fr; } 
@@ -116,36 +128,34 @@
 
 <div class="main-wrapper">
     <div class="side-panel">
-        <h3 style="color:var(--primary-color); font-size: 18px;">العيادات التخصصية 👨‍⚕️</h3>
+        <h3 style="color:var(--primary-color)">خدماتنا المتميزة ✨</h3>
         <ul class="info-list">
-            <li>🚑 طوارئ 24 ساعة</li>
-            <li>🧪 معمل تحاليل متكامل</li>
-            <li>🦷 عيادة الأسنان</li>
-            <li>❤️ عيادة القلب</li>
-            <li>🦴 عيادة العظام</li>
+            <li>🚑 طوارئ متوفرة 24 ساعة</li>
+            <li>🧪 المعمل متوفر 24 ساعة</li>
+            <li>✅ نخبة من الأطباء المتخصصين</li>
+            <li>🏥 رعاية طبية متكاملة</li>
         </ul>
     </div>
 
     <div class="container">
         <div class="ticker-wrapper">
             <div class="ticker-text">
-                ومازال عرض <span class="highlight-text">الإثنين الأبيض الأسبوعي</span> مستمراً .. خصومات <span class="highlight-text">50%</span> على جميع التحاليل بمجمع شبراملس الطبي
+                🔥🔥 حصرياً: خصم 50% على جميع تحاليل المعمل طوال أيام الأسبوع بمناسبة الافتتاح .. مجمع شبراملس الطبي رفيقكم في الصحة 🔥🔥
             </div>
         </div>
 
         <img src="logo.png" alt="Logo" class="main-logo">
-        <h2 style="color:var(--primary-color); font-size: 24px; margin: 0;">مجمع شبراملس الطبي</h2>
-        <p style="color:#666; font-size:14px; margin-bottom:15px;">الحجز الإلكتروني المباشر</p>
+        <h2>مجمع شبراملس الطبي</h2>
         
         <form id="booking-form">
             <div class="form-group">
                 <label>اسم المريض:</label>
-                <input type="text" id="pName" name="patientName" required placeholder="ادخل الاسم بالكامل">
+                <input type="text" id="pName" name="patientName" required placeholder="الاسم الثلاثي المريض">
             </div>
             <div class="form-group">
-                <label>اختر اليوم:</label>
+                <label>يوم الحجز:</label>
                 <select id="bDay" name="bookingDay" required onchange="updateSpecialties()">
-                    <option value="">-- اختر اليوم --</option>
+                    <option value="">اختر اليوم...</option>
                     <option value="السبت">السبت</option><option value="الأحد">الأحد</option>
                     <option value="الإثنين">الإثنين</option><option value="الثلاثاء">الثلاثاء</option>
                     <option value="الأربعاء">الأربعاء</option><option value="الخميس">الخميس</option>
@@ -164,39 +174,34 @@
                     <option value="">اختر العيادة أولاً...</option>
                 </select>
             </div>
-            
-            <div class="button-group">
-                <button type="submit" class="submit-btn" id="btn">إرسال الحجز</button>
-                <button type="button" class="cancel-btn" onclick="resetForm()">إلغاء</button>
-            </div>
-            <p id="loader" style="display:none; color:var(--primary-color); margin-top:10px; font-size:12px;">جاري المعالجة... ⏳</p>
+            <button type="submit" class="submit-btn" id="btn">تأكيد الحجز الآن</button>
+            <p id="loader" style="display:none; color:var(--primary-color); margin-top:10px;">جاري إرسال حجزك...</p>
         </form>
 
-        <div id="success-msg" style="display:none; margin-top:10px;">
-            <h2 style="color:var(--success-color); font-size: 20px;">تم الحجز! ✅</h2>
-            <div style="background:#f1f8e9; padding:10px; border-radius:10px; margin:10px 0;">
-                <span style="font-size:12px;">رقم الدور:</span>
-                <span style="font-size:30px; font-weight:900; color:var(--success-color)" id="b-num">0</span>
+        <div id="success-msg" style="display:none; margin-top:15px;">
+            <div style="font-size: 30px; margin-bottom: 5px;">✅</div>
+            <h3 style="color:var(--success-color); font-size: 20px; margin:0 0 10px 0;">تم الحجز بنجاح</h3>
+            <div style="background:#f1f8e9; padding:15px; border-radius:10px; margin:10px 0;">
+                <span style="font-size:13px; color:#555;">رقم الدور اليومي</span>
+                <span style="font-size:40px; font-weight:900; color:var(--success-color)" id="b-num">0</span>
             </div>
-            <button onclick="location.reload()" style="background:var(--primary-color); color:white; border:none; padding:8px 20px; border-radius:5px; cursor:pointer;">رجوع</button>
+            <p style="color:red; font-size:14px; font-weight:bold">يرجى تصوير الشاشة واظهار الرقم لموظف الاستقبال</p>
+            <button onclick="location.reload()" style="background:var(--primary-dark); color:white; border:none; padding:10px 20px; border-radius:5px; cursor:pointer;">رجوع</button>
         </div>
     </div>
 
     <div class="side-panel">
-        <h3 style="color:var(--primary-color); font-size: 18px;">تواصل معنا 📞</h3>
+        <h3 style="color:var(--primary-color)">📍 العنوان والاتصال</h3>
         <ul class="info-list" style="font-size:14px;">
-            <li>📍 أعلى مسجد عباد الرحمن</li>
+            <li>📍 شبراملس – أعلى مسجد عباد الرحمن</li>
             <li>🟢 واتساب: 01020580002</li>
             <li>📲 موبايل: 01122593433</li>
         </ul>
-        <div style="background:#00bcd4; color:white; padding:8px; border-radius:10px; margin-top:10px; font-size:11px; font-weight:bold;">
-             الطوارئ والمعمل 24 ساعة
-        </div>
     </div>
 </div>
 
 <script>
-// كود البرمجة (JavaScript) كما هو لضمان استمرارية العمل
+// كود البرمجة وقائمة الأطباء كما هي دون تغيير
 const constantServices = { "طوارئ 24 ساعة": ["طبيب الطوارئ"], "معمل التحاليل": ["د. ثريا القاضي", "د. فريال محمود رزق"] };
 const scheduleData = {
     "السبت": { "أسنان": ["د. رنا حمودة", "د. خالد الداهس"], "مسالك": ["د. علي منتصر"], "أنف وأذن": ["د. محمد هيكل"], "عيون": ["أخصائي محمد مجدي سعده"] },
@@ -207,6 +212,7 @@ const scheduleData = {
     "الخميس": { "قلب": ["د. أحمد مسعد الغلبان"], "أنف وأذن": ["د. محمد هيكل"], "عظام": ["أخصائي إبراهيم مطاوع"], "عيون": ["أخصائي محمد مجدي سعده"] },
     "الجمعة": { "باطنة ومناظير": ["د. عزيز بدير"] }
 };
+
 function updateSpecialties() {
     const day = document.getElementById('bDay').value;
     const specSelect = document.getElementById('specialty');
@@ -216,6 +222,7 @@ function updateSpecialties() {
         if(scheduleData[day]) Object.keys(scheduleData[day]).forEach(s => specSelect.add(new Option(s, s)));
     }
 }
+
 function updateDoctors() {
     const day = document.getElementById('bDay').value;
     const spec = document.getElementById('specialty').value;
@@ -224,23 +231,31 @@ function updateDoctors() {
     let list = constantServices[spec] || (scheduleData[day] ? scheduleData[day][spec] : null);
     if(list) list.forEach(d => docSelect.add(new Option(d, d)));
 }
-function resetForm() { if(confirm("هل تريد مسح البيانات؟")) { document.getElementById('booking-form').reset(); } }
+
 const scriptURL = 'https://script.google.com/macros/s/AKfycbwzVo2w7Jjzjo5icuSgXV4fj6BJGu2gdcVSZBHcss6heWriEXtGt7AMoFJTpnYrfvdC-w/exec';
 const form = document.getElementById('booking-form');
+
 form.addEventListener('submit', e => {
     e.preventDefault();
     document.getElementById('btn').style.display = 'none';
     document.getElementById('loader').style.display = 'block';
+
+    const pName = document.getElementById('pName').value;
+    const doctor = document.getElementById('doctorName').value;
+
     fetch(scriptURL, { method: 'POST', body: new FormData(form)})
     .then(() => {
         document.getElementById('loader').style.display = 'none';
         form.style.display = 'none';
+        
         let count = (localStorage.getItem('bDate') === new Date().toLocaleDateString()) ? parseInt(localStorage.getItem('bCount')) + 1 : 1;
         localStorage.setItem('bDate', new Date().toLocaleDateString());
         localStorage.setItem('bCount', count);
+
         document.getElementById('b-num').innerText = count;
         document.getElementById('success-msg').style.display = 'block';
-        const msg = `*حجز جديد*📝%0A*المريض:* ${document.getElementById('pName').value}%0A*الدكتور:* ${document.getElementById('doctorName').value}%0A*رقم الدور:* ${count}`;
+
+        const msg = `*حجز جديد*📝%0A*المريض:* ${pName}%0A*الطبيب:* ${doctor}%0A*رقم الدور:* ${count}`;
         setTimeout(() => { window.location.href = `https://wa.me/201122501159?text=${msg}`; }, 1000);
     })
     .catch(() => { alert('خطأ!'); document.getElementById('btn').style.display = 'block'; });
