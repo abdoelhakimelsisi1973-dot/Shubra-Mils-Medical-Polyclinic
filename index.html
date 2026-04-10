@@ -18,7 +18,8 @@
         .news-ticker { position: absolute; top: 0; left: 0; width: 100%; background-color: var(--primary-color); color: #fff; padding: 6px 0; overflow: hidden; z-index: 1000; }
         .ticker-text { display: inline-block; white-space: nowrap; font-size: 15px; font-weight: 700; animation: marquee 25s linear infinite; }
         @keyframes marquee { 0% { transform: translateX(-100vw); } 100% { transform: translateX(100vw); } }
-        .main-wrapper { display: grid; grid-template-columns: 350px 1fr 350px; gap: 25px; max-width: 1500px; width: 100%; margin-top: 20px; }
+        /* تعديل تساوي الجوانب هنا */
+        .main-wrapper { display: grid; grid-template-columns: 1fr 1.8fr 1fr; gap: 25px; max-width: 1500px; width: 100%; margin-top: 20px; }
         .side-panel { background: var(--card-bg); border-radius: 25px; padding: 30px; height: fit-content; box-shadow: 0 15px 35px rgba(0,0,0,0.1); }
         .side-panel h3 { color: var(--primary-color); border-bottom: 2px solid var(--accent-color); padding-bottom: 10px; }
         .container { background: var(--card-bg); border-radius: 30px; padding: 40px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.15); border-top: 8px solid var(--primary-color); }
@@ -39,24 +40,25 @@
     <div class="ticker-text">مازالت عروض الإثنين الأبيض مستمرة &nbsp;&nbsp;&nbsp; 50% تخفيضات على جميع التحاليل</div>
 </div>
 
-<div class="side-panel">
-        <h3>خدماتنا المتميزة ✨</h3>
-        <ul style="list-style:none; padding:0; line-height:2;">
-            <li>🚑 الطوارئ متوفرة 24 ساعة يومياً</li>
-            <li>🧪 المعمل متوفر 24 ساعة لخدمتك</li>
-            <li>✅ نخبة من الأطباء المتخصصين</li>
-            <li>✅ أحدث الأجهزة الطبية</li>
-            <li>✅ رعاية متكاملة طوال الأسبوع</li>
-        </ul>
-    </div>
+<div class="main-wrapper">
+    <div class="side-panel">
+        <h3>خدماتنا المتميزة ✨</h3>
+        <ul style="list-style:none; padding:0; line-height:2;">
+            <li>🚑 الطوارئ متوفرة 24 ساعة يومياً</li>
+            <li>🧪 المعمل متوفر 24 ساعة لخدمتك</li>
+            <li>✅ نخبة من الأطباء المتخصصين</li>
+            <li>✅ أحدث الأجهزة الطبية</li>
+            <li>✅ رعاية متكاملة طوال الأسبوع</li>
+        </ul>
+    </div>
 
     <div class="container">
         <img src="logo.png" alt="Logo" class="main-logo">
         <h2>مجمع شبراملس الطبي</h2>
-        <form id="booking-form"> autocomplete="off">
+        <form id="booking-form" autocomplete="off">
             <div class="form-group">
                 <label>اسم المريض:</label>
-                <input type="text" id="pName" required placeholder="الاسم الثلاثي"< autocomplete="one-time-code">
+                <input type="text" id="pName" required placeholder="الاسم الثلاثي" autocomplete="one-time-code">
             </div>
             <div class="form-group">
                 <label>يوم الحجز:</label>
@@ -84,7 +86,7 @@
             <p id="loader" style="display:none; margin-top:15px;">جاري المعالجة... ⏳</p>
         </form>
 
-        <<div id="success-msg">
+        <div id="success-msg">
             <h3 style="color:var(--success-color);">✅ تم الحجز بنجاح</h3>
             <p>المريض: <b id="res-name"></b></p>
             <p style="color: var(--primary-color); font-weight: bold; margin-bottom: 5px;">يرجى تصوير الشاشة وإظهارها لموظف الاستقبال</p>
@@ -92,10 +94,9 @@
             <p style="color: var(--cancel-color); font-size: 15px; font-weight: bold; margin-bottom: 20px;">سيتم إلغاء الحجز حين انتهاء وقت العيادة</p>
             <button onclick="location.reload()" class="cancel-btn">حجز جديد</button>
         </div>
-        </div>
     </div>
 
-    <<div class="side-panel">
+    <div class="side-panel">
         <h3>📍 تواصل معنا</h3>
         <p style="line-height: 1.6; font-weight: 500;">
             <strong>العنوان:</strong><br> شبراملس – امتداد شارع السوق - أعلي مسجد عباد الرحمن
@@ -109,10 +110,11 @@
             <li>0404658010 📞</li>
         </ul>
     </div>
+</div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, collection, addDoc, serverTimestamp, query, getDocs, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, serverTimestamp, query, getDocs, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
     
     const firebaseConfig = {
         apiKey: "AIzaSyCghSGMQpRKBBWEvPsv50S0--bLr8mLTc",
@@ -136,7 +138,6 @@ import { getFirestore, collection, addDoc, serverTimestamp, query, getDocs, wher
         "الجمعة": { "باطنة ومناظير": ["د. عزيز بدير (02:00 ظهراً)"] }
     };
 
-    // ربط الوظائف بـ window لتعمل مع الـ HTML
     window.updateSpecialties = function() {
         const day = document.getElementById('bDay').value;
         const specSelect = document.getElementById('specialty');
@@ -166,7 +167,8 @@ import { getFirestore, collection, addDoc, serverTimestamp, query, getDocs, wher
         document.getElementById('btn').style.display = 'none';
         document.getElementById('loader').style.display = 'block';
 
-      try {
+        try {
+            // الترتيب حسب العيادة واليوم
             const selectedSpec = document.getElementById('specialty').value;
             const selectedDay = document.getElementById('bDay').value;
 
@@ -200,6 +202,7 @@ import { getFirestore, collection, addDoc, serverTimestamp, query, getDocs, wher
             document.getElementById('btn').style.display = 'block';
             document.getElementById('loader').style.display = 'none';
         }
+    });
 </script>
 </body>
 </html>
