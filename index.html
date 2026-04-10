@@ -130,12 +130,36 @@
         </ul>
     </div>
 
-    <div class="container">
-        <div class="ticker-wrapper">
-            <div class="ticker-text">
-                ومازال عرض <span class="highlight-text">الإثنين الأبيض الأسبوعي</span> مستمراً .. خصومات <span class="highlight-text">50%</span> على جميع التحاليل بمجمع شبراملس الطبي
-            </div>
+    <style>
+    /* تنسيق الشريط ليصبح أكثر سمكاً مع الخلفية اللبني */
+    .ticker-wrapper {
+        background-color: #e3f2fd; /* خلفية بلون لبني فاتح */
+        padding: 25px 0; /* زيادة الهوامش العلوية والسفلية لزيادة سمك الشريط */
+        text-align: center;
+        border-radius: 8px; /* إضافة حواف دائرية بسيطة (اختياري) */
+    }
+
+    /* تنسيق النص ليكون غامقاً وواضحاً */
+    .ticker-text {
+        font-size: 24px; /* تكبير حجم الخط */
+        font-weight: 900; /* جعل الخط غامقاً وسميكاً */
+        color: #1a1a1a; /* لون النص الأساسي غامق */
+    }
+
+    /* تنسيق الكلمات المميزة بنفس تقسيم الألوان */
+    .highlight-text {
+        color: #0d47a1; /* لون أزرق غامق لتمييز الكلمات */
+        font-weight: 900;
+    }
+</style>
+
+<div class="container">
+    <div class="ticker-wrapper">
+        <div class="ticker-text">
+            ومازال عرض <span class="highlight-text">الإثنين الأبيض الأسبوعي</span> مستمراً .. خصومات <span class="highlight-text">50%</span> على جميع التحاليل بمجمع شبراملس الطبي
         </div>
+    </div>
+</div>
 
         <img src="logo.png" alt="Logo" class="main-logo">
         <h2 style="color:var(--primary-color); font-size: 24px; margin: 0;">مجمع شبراملس الطبي</h2>
