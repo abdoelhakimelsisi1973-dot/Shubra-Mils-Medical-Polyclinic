@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم مجمع شبراملس</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        body { font-family: 'Tajawal', sans-serif; background: #f4f7f6; margin: 0; padding: 20px; }
+        .dashboard-container { max-width: 1000px; margin: 0 auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
+        h2 { color: #0097a7; text-align: center; border-bottom: 2px solid #0097a7; padding-bottom: 10px; }
+        .controls { display: flex; gap: 10px; margin-bottom: 20px; align-items: center; background: #e0f7fa; padding: 15px; border-radius: 10px; flex-wrap: wrap; }
+        select { padding: 10px; border-radius: 5px; border: 1px solid #ccc; font-family: 'Tajawal'; flex: 1; min-width: 150px; }
+        button { border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; font-family: 'Tajawal'; }
+        .btn-print { background: #0097a7; color: white; }
+        .btn-save-img { background: #2e7d32; color: white; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: right; }
+        th { background-color: #0097a7; color: white; }
+        #capture-area { padding: 10px; }
+        @media print { .controls { display: none; } }
+    </style>
+</head>
+<body>
+
+<div class="dashboard-container">
+    <h2>📋 لوحة تحكم حجوزات مجمع شبراملس</h2>
+
+    <div class="controls">
+        <label>اليوم:</label>
+        <select id="filterDay" onchange="window.loadBookings()">
+            <option value="الكل">عرض الكل</option>
+            <option value="السبت">السبت</option><option value="الأحد">الأحد</option>
+            <option value="الإثنين">الإثنين</option><option value="الثلاثاء">الثلاثاء</option>
+            <option value="الأربعاء">الأربعاء</option><option value="الخميس">الخميس</option>
+            <option value="الجمعة">الجمعة</option>
+        </select>
+        <button class="btn-print" onclick="window.print()">🖨️ طباعة</button>
+        <button class="btn-save-img" onclick="window.saveAsImage()">🖼️ حفظ كصورة</button>
+    </div>
+
+    <div id="capture-area">
+        <table id="bookingsTable">
+            <thead>
+                <tr>
+                    <th>الدور</th>
+                    <th>اسم المريض</th>
+                    <th>العيادة</th>
+                    <th>الطبيب</th>
+                    <th>وقت التسجيل</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+    </div>
+    <div id="loader" style="text-align:center; padding:20px; display:none;">جاري التحميل...</div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, query, getDocs, orderBy, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyCghSGMQpRKBBWEvPsv50S0--bLr8mLTc",
+        authDomain: "shubra-mils-clinic.firebaseapp.com",
+        projectId: "shubra-mils-clinic",
+        storageBucket: "shubra-mils-clinic.firebasestorage.app",
+        messagingSenderId: "458397109437",
+        appId: "1:458397109437:web:f8987863f32e1dbdbc3bd4"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    window.loadBookings = async function() {
+        const tableBody = document.getElementById('tableBody');
+        const loader = document.getElementById('loader');
+        const day = document.getElementById('filterDay').value;
+        tableBody.innerHTML = "";
+        loader.style.display = "block";
+
+        try {
+            let q = collection(db, "bookings");
+            if (day !== "الكل") {
+                q = query(q, where("bookingDay", "==", day), orderBy("timestamp", "asc"));
+            } else {
+                q = query(q, orderBy("timestamp", "desc"));
+            }
+
+            const snap = await getDocs(q);
+            loader.style.display = "none";
+            if (snap.empty) {
+                tableBody.innerHTML = "<tr><td colspan='5' style='text-align:center'>لا توجد حجوزات</td></tr>";
+                return;
+            }
+
+            snap.forEach(doc => {
+                const d = doc.data();
+                const time = d.timestamp ? d.timestamp.toDate().toLocaleTimeString('ar-EG', {hour: '2-digit', minute:'2-digit'}) : '--';
+                tableBody.innerHTML += `<tr>
+                    <td><b>${d.orderNumber}</b></td>
+                    <td>${d.patientName}</td>
+                    <td>${d.specialty || 'عيادة'}</td>
+                    <td>${d.doctorName}</td>
+                    <td>${time}</td>
+                </tr>`;
+            });
+        } catch (e) { console.error(e); loader.innerText = "خطأ في التحميل"; }
+    }
+
+    window.saveAsImage = function() {
+        const area = document.getElementById('capture-area');
+        html2canvas(area, { scale: 2 }).then(canvas => {
+            const link = document.createElement('a');
+            link.download = `حجوزات_${document.getElementById('filterDay').value}.png`;
+            link.href = canvas.toDataURL("image/png", 0.7);
+            link.click();
+        });
+    }
+
+    window.loadBookings();
+</script>
+</body>
+</html>
