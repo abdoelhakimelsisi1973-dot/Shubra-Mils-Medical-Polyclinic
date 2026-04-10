@@ -39,25 +39,24 @@
     <div class="ticker-text">مازالت عروض الإثنين الأبيض مستمرة &nbsp;&nbsp;&nbsp; 50% تخفيضات على جميع التحاليل</div>
 </div>
 
-<div class="main-wrapper">
-    <div class="side-panel">
-        <h3>خدماتنا المتميزة ✨</h3>
-        <ul style="list-style:none; padding:0; line-height:2;">
-            <li>🚑 الطوارئ متوفرة 24 ساعة يومياً</li>
-            <li>🧪 المعمل متوفر 24 ساعة لخدمتك</li>
-            <li>✅ نخبة من الأطباء المتخصصين</li>
-            <li>✅ أحدث الأجهزة الطبية</li>
-            <li>✅ رعاية متكاملة طوال الأسبوع</li>
-        </ul>
-    </div>
+<div class="side-panel">
+        <h3>خدماتنا المتميزة ✨</h3>
+        <ul style="list-style:none; padding:0; line-height:2;">
+            <li>🚑 الطوارئ متوفرة 24 ساعة يومياً</li>
+            <li>🧪 المعمل متوفر 24 ساعة لخدمتك</li>
+            <li>✅ نخبة من الأطباء المتخصصين</li>
+            <li>✅ أحدث الأجهزة الطبية</li>
+            <li>✅ رعاية متكاملة طوال الأسبوع</li>
+        </ul>
+    </div>
 
     <div class="container">
         <img src="logo.png" alt="Logo" class="main-logo">
         <h2>مجمع شبراملس الطبي</h2>
-        <form id="booking-form" autocomplete="off">
+        <form id="booking-form"> autocomplete="off">
             <div class="form-group">
                 <label>اسم المريض:</label>
-                <input type="text" id="pName" required placeholder="الاسم الثلاثي" autocomplete="one-time-code">
+                <input type="text" id="pName" required placeholder="الاسم الثلاثي">autocomplete="one-time-code">
             </div>
             <div class="form-group">
                 <label>يوم الحجز:</label>
@@ -85,15 +84,18 @@
             <p id="loader" style="display:none; margin-top:15px;">جاري المعالجة... ⏳</p>
         </form>
 
-        <div id="success-msg">
+        <<div id="success-msg">
             <h3 style="color:var(--success-color);">✅ تم الحجز بنجاح</h3>
             <p>المريض: <b id="res-name"></b></p>
-            <p>رقم الدور: <b id="b-num" style="font-size:40px;">0</b></p>
+            <p style="color: var(--primary-color); font-weight: bold; margin-bottom: 5px;">يرجى تصوير الشاشة وإظهارها لموظف الاستقبال</p>
+            <p>رقم الدور: <b id="b-num" style="font-size:45px; display: block; margin: 10px 0;">0</b></p>
+            <p style="color: var(--cancel-color); font-size: 15px; font-weight: bold; margin-bottom: 20px;">سيتم إلغاء الحجز حين انتهاء وقت العيادة</p>
             <button onclick="location.reload()" class="cancel-btn">حجز جديد</button>
+        </div>
         </div>
     </div>
 
-    <div class="side-panel">
+    <<div class="side-panel">
         <h3>📍 تواصل معنا</h3>
         <p style="line-height: 1.6; font-weight: 500;">
             <strong>العنوان:</strong><br> شبراملس – امتداد شارع السوق - أعلي مسجد عباد الرحمن
@@ -107,13 +109,11 @@
             <li>0404658010 📞</li>
         </ul>
     </div>
-</div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    // إضافة where في السطر التالي
-    import { getFirestore, collection, addDoc, serverTimestamp, query, getDocs, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
+import { getFirestore, collection, addDoc, serverTimestamp, query, getDocs, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    
     const firebaseConfig = {
         apiKey: "AIzaSyCghSGMQpRKBBWEvPsv50S0--bLr8mLTc",
         authDomain: "shubra-mils-clinic.firebaseapp.com",
@@ -136,6 +136,7 @@
         "الجمعة": { "باطنة ومناظير": ["د. عزيز بدير (02:00 ظهراً)"] }
     };
 
+    // ربط الوظائف بـ window لتعمل مع الـ HTML
     window.updateSpecialties = function() {
         const day = document.getElementById('bDay').value;
         const specSelect = document.getElementById('specialty');
@@ -166,24 +167,14 @@
         document.getElementById('loader').style.display = 'block';
 
         try {
-            // التعديل الجديد للترتيب حسب العيادة واليوم
-            const selectedSpec = document.getElementById('specialty').value;
-            const selectedDay = document.getElementById('bDay').value;
-
-            const q = query(
-                collection(db, "bookings"), 
-                where("specialty", "==", selectedSpec),
-                where("bookingDay", "==", selectedDay)
-            );
-            
+            const q = query(collection(db, "bookings"));
             const querySnapshot = await getDocs(q);
             const count = querySnapshot.size + 1;
 
             await addDoc(collection(db, "bookings"), {
                 patientName: document.getElementById('pName').value,
-                specialty: selectedSpec, // إضافة التخصص لقاعدة البيانات
                 doctorName: document.getElementById('doctorName').value,
-                bookingDay: selectedDay,
+                bookingDay: document.getElementById('bDay').value,
                 orderNumber: count,
                 timestamp: serverTimestamp()
             });
@@ -196,10 +187,8 @@
             
             setTimeout(() => { window.location.href = `https://wa.me/201122501159?text=حجز جديد للمريض ${document.getElementById('pName').value}`; }, 1500);
         } catch (e) {
-            console.error("Error:", e);
             alert("خطأ في الاتصال");
             document.getElementById('btn').style.display = 'block';
-            document.getElementById('loader').style.display = 'none';
         }
     });
 </script>
