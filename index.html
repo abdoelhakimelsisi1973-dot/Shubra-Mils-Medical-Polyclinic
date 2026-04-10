@@ -43,16 +43,18 @@
             width: 100%; 
         }
 
-        /* تعديل الشريط المتحرك ليكون نحيفاً جداً (ثلث الحجم السابق) */
+        /* تعديل الشريط المتحرك ليكون نحيفاً جداً (خيط) */
         .ticker-wrapper {
             background: var(--offer-bg);
             border: 1px solid var(--offer-text);
-            border-radius: 8px;
-            margin-bottom: 15px;
+            border-radius: 4px; /* تصغير الحواف */
+            margin-bottom: 10px; /* تقليل الهامش */
             overflow: hidden;
             white-space: nowrap;
-            padding: 5px; /* تقليل الحشو الداخلي */
+            padding: 2px 5px; /* تقليل الحشو الرأسي لأدنى حد */
             position: relative;
+            line-height: 1; /* تأكد من أن النص يتوسط العمودياً */
+            height: 18px; /* تحديد الارتفاع بشكل صريح لتصغيره جداً */
         }
 
         .ticker-text {
@@ -61,7 +63,7 @@
             animation: ticker 25s linear infinite;
             color: var(--offer-text);
             font-weight: 700;
-            font-size: 14px; /* تصغير الخط */
+            font-size: 11px; /* تصغير الخط لأدنى حد */
         }
 
         @keyframes ticker {
