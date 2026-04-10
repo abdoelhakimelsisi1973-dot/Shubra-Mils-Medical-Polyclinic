@@ -166,15 +166,24 @@ import { getFirestore, collection, addDoc, serverTimestamp, query, getDocs, wher
         document.getElementById('btn').style.display = 'none';
         document.getElementById('loader').style.display = 'block';
 
-        try {
-            const q = query(collection(db, "bookings"));
+      try {
+            const selectedSpec = document.getElementById('specialty').value;
+            const selectedDay = document.getElementById('bDay').value;
+
+            const q = query(
+                collection(db, "bookings"), 
+                where("specialty", "==", selectedSpec),
+                where("bookingDay", "==", selectedDay)
+            );
+            
             const querySnapshot = await getDocs(q);
             const count = querySnapshot.size + 1;
 
             await addDoc(collection(db, "bookings"), {
                 patientName: document.getElementById('pName').value,
+                specialty: selectedSpec,
                 doctorName: document.getElementById('doctorName').value,
-                bookingDay: document.getElementById('bDay').value,
+                bookingDay: selectedDay,
                 orderNumber: count,
                 timestamp: serverTimestamp()
             });
@@ -184,13 +193,13 @@ import { getFirestore, collection, addDoc, serverTimestamp, query, getDocs, wher
             document.getElementById('res-name').innerText = document.getElementById('pName').value;
             document.getElementById('b-num').innerText = count;
             document.getElementById('success-msg').style.display = 'block';
-            
-            setTimeout(() => { window.location.href = `https://wa.me/201122501159?text=حجز جديد للمريض ${document.getElementById('pName').value}`; }, 1500);
+
         } catch (e) {
+            console.error("Error:", e);
             alert("خطأ في الاتصال");
             document.getElementById('btn').style.display = 'block';
+            document.getElementById('loader').style.display = 'none';
         }
-    });
 </script>
 </body>
 </html>
