@@ -35,12 +35,40 @@
             color: var(--text-dark);
         }
 
+        /* تنسيقات الشريط المتحرك */
+        .news-ticker {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--primary-color);
+            color: #fff;
+            padding: 6px 0;
+            overflow: hidden;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .ticker-text {
+            display: inline-block;
+            white-space: nowrap;
+            font-size: 15px;
+            font-weight: 700;
+            animation: marquee 25s linear infinite;
+        }
+
+        @keyframes marquee {
+            0% { transform: translateX(-100vw); }
+            100% { transform: translateX(100vw); }
+        }
+
         .main-wrapper { 
             display: grid; 
             grid-template-columns: 350px 1fr 350px; 
             gap: 25px; 
             max-width: 1500px; 
             width: 100%; 
+            margin-top: 20px; /* لترك مسافة بسيطة للشريط العلوي */
         }
 
         .side-panel { 
@@ -65,7 +93,7 @@
 
         .info-list { list-style: none; padding: 0; }
         .info-list li { 
-            font-size: 18px; /* تكبير الخط الجانبي */
+            font-size: 18px; 
             font-weight: 500;
             margin-bottom: 15px; 
             display: flex; 
@@ -153,6 +181,12 @@
     </style>
 </head>
 <body>
+
+<div class="news-ticker">
+    <div class="ticker-text">
+        مازالت عروض الإثنين الأبيض مستمرة &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 50 في الميه تخفيضات على جميع التحاليل
+    </div>
+</div>
 
 <div class="main-wrapper">
     <div class="side-panel">
