@@ -165,7 +165,7 @@
 <script>
     // رابط جوجل شيت الخاص بك (CSV للقراءة)
 <script>
-    const sheetCSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRbnDZjQKUzZQBjvc3b1jD8Jzy8Ndeif51RWrLohsmnKZVEmJrGxSqXS0Q8FlTb5y-M6vHuScw_vlTv/pub?output=csv";
+const sheetCSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRbnDZjQKUzZQBjvc3b1jD8Jzy8Ndeif51RWrLohsmnKZVEmJrGxSqXS0Q8FlTb5y-M6vHuScw_vlTv/pub?output=csv";
 
     const scheduleData = {
         "السبت": { "أسنان": ["د. رنا حمودة (04:00 عصراً)", "د. خالد الداهس (09:00 مساءً)"], "مسالك": ["د. علي منتصر"], "أنف وأذن": ["د. محمد هيكل"], "عيون": ["أخصائي محمد مجدي سعده"] },
@@ -177,10 +177,15 @@
         "الجمعة": { "باطنة ومناظير": ["د. عزيز بدير (02:00 ظهراً)"] }
     };
 
+    // تعريف وظائف القوائم لتكون مقروءة بوضوح في الـ HTML
     window.updateSpecialties = function() {
         const day = document.getElementById('bDay').value;
         const specSelect = document.getElementById('specialty');
+        const docSelect = document.getElementById('doctorName');
+        
         specSelect.innerHTML = '<option value="">اختر العيادة...</option>';
+        docSelect.innerHTML = '<option value="">اختر الطبيب...</option>';
+        
         if(day && scheduleData[day]) {
             Object.keys(scheduleData[day]).forEach(s => specSelect.add(new Option(s, s)));
         }
@@ -190,22 +195,27 @@
         const day = document.getElementById('bDay').value;
         const spec = document.getElementById('specialty').value;
         const docSelect = document.getElementById('doctorName');
+        
         docSelect.innerHTML = '<option value="">اختر الطبيب...</option>';
+        
         if(day && spec && scheduleData[day][spec]) {
             scheduleData[day][spec].forEach(d => docSelect.add(new Option(d, d)));
         }
     }
 
+    // معالجة زر الإرسال والحفظ
     document.getElementById('booking-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         document.getElementById('btn').style.display = 'none';
         document.getElementById('loader').style.display = 'block';
 
         try {
+            const pName = document.getElementById('pName').value;
             const selectedSpec = document.getElementById('specialty').value;
             const selectedDay = document.getElementById('bDay').value;
+            const selectedDoc = document.getElementById('doctorName').value;
 
-            // جلب البيانات من جوجل شيت لحساب الدور
+            // 1. جلب البيانات من جوجل شيت لحساب الدور المتسلسل للعيادة
             const response = await fetch(sheetCSV);
             const data = await response.text();
             const rows = data.split('\n');
@@ -214,21 +224,33 @@
             
             rows.forEach(row => {
                 const cols = row.split(',').map(c => c.trim().replace(/"/g, ''));
+                if (cols.length < 2) return;
                 
-                // الترتيب في شيت جوجل غالباً يكون:
-                // [0] الوقت | [1] الاسم | [2] العيادة | [3] الطبيب | [4] اليوم
                 const sheetClinic = cols[2]; 
-                const sheetDay = cols[4];
+                const sheetDay = cols[4]; // تأكد أن عمود اليوم هو الخامس في شيتك
 
                 if(sheetClinic === selectedSpec && sheetDay === selectedDay) {
                     count++;
                 }
             });
 
-            // إظهار النتيجة للمريض
+            // 2. إرسال البيانات للحفظ في جوجل شيت (تمت إضافتها لضمان الحفظ)
+            // ⚠️ تنبيه: ضع رابط الـ Web App الخاص بك (Script URL) بدلاً من هذه الكلمة
+            const scriptURL = "رابط_تطبيق_جوجل_سكربت_الخاص_بك_هنا"; 
+            
+            const formData = new FormData();
+            formData.append('pName', pName);
+            formData.append('bDay', selectedDay);
+            formData.append('specialty', selectedSpec);
+            formData.append('doctorName', selectedDoc);
+            formData.append('orderNumber', count); // إرسال رقم الدور للشيت
+
+            await fetch(scriptURL, { method: 'POST', body: formData, mode: 'no-cors' });
+
+            // 3. إظهار النتيجة للمريض
             document.getElementById('loader').style.display = 'none';
             document.getElementById('booking-form').style.display = 'none';
-            document.getElementById('res-name').innerText = document.getElementById('pName').value;
+            document.getElementById('res-name').innerText = pName;
             document.getElementById('b-num').innerText = count;
             document.getElementById('success-msg').style.display = 'block';
 
