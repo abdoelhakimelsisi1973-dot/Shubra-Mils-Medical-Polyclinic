@@ -349,8 +349,7 @@ form.addEventListener('submit', e => {
         document.getElementById('b-num').innerText = count;
         document.getElementById('success-msg').style.display = 'block';
 
-        const msg = `*حجز جديد*📝%0A*المريض:* ${pName}%0A*اليوم:* ${bDay}%0A*العيادة:* ${spec}%0A*الدكتور:* ${doctor}%0A*رقم الدور:* ${count}`;
-        setTimeout(() => { window.location.href = `https://wa.me/201122501159?text=${msg}`; }, 1000);
+
     })
     .catch(() => { alert('حدث خطأ! يرجى المحاولة مرة أخرى.'); document.getElementById('btn').style.display = 'block'; });
 });
