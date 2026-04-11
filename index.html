@@ -49,7 +49,10 @@
 <body>
 
 <div class="news-ticker">
-    <div class="ticker-text">مجمع شبراملس الطبي يرحب بكم &nbsp;&nbsp;&nbsp; تم تفعيل نظام الحجز الإلكتروني الذكي لخدمتكم بشكل أفضل</div>
+<div class="ticker-text">
+    مجمع شبراملس الطبي يرحب بكم &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp; 
+    تم تفعيل نظام الحجز الإلكتروني الذكي لخدمتكم &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp; 
+    مازال عرض الإثنين الأبيض مستمراً.. تخفيضات 50% على جميع أنواع التحاليل 🔬
 </div>
 
 <div class="main-wrapper">
@@ -101,23 +104,27 @@
             <div id="loader">جاري تسجيل حجزك في المنصة الذكية... ⏳</div>
         </form>
 
-        <div id="success-msg">
-            <h3 style="color:var(--success-color);">✅ تم الحجز بنجاح</h3>
-            <p style="font-size: 18px;">المريض: <b id="res-name"></b></p>
-            <div style="background: #e0f2f1; padding: 20px; border-radius: 15px; margin: 20px 0;">
-                <p style="margin:0; color:var(--primary-color);">رقم الدور الخاص بك هو:</p>
-                <b id="b-num" style="font-size:60px; color:var(--primary-color);">0</b>
-            </div>
-            <p style="font-size: 14px; color: #666;">يرجى تصوير الشاشة والتوجه لموظف الاستقبال</p>
-            <button onclick="location.reload()" class="cancel-btn" style="width:100%">حجز مريض آخر</button>
-        </div>
+     <div id="success-msg">
+        <h3 style="color:var(--success-color); margin-top:0;">✅ تم الحجز بنجاح</h3>
+        <p>المريض: <b id="res-name"></b></p>
+       <div style="background: #e0f2f1; padding: 15px; border-radius: 15px; margin: 15px 0; border: 2px dashed var(--primary-color);">
+        <p style="margin:0; color:var(--primary-color); font-weight:bold;">رقم الدور الخاص بك:</p>
+        <b id="b-num" style="font-size:65px; color:var(--primary-color);">0</b>
+        <p style="margin: 10px 0 0; color: #d32f2f; font-size: 14px; font-weight: bold;">
+            سيتم إلغاء الحجز حين انتهاء وقت العيادة
+        </p>
     </div>
+    <p style="font-size: 14px; color: #666;">⚠️  يرجى تصوير الشاشة وإظهارها لموظف الاستقبال</p>
+    <button onclick="location.reload()" class="submit-btn" style="width:100%; background: var(--primary-color);">حجز مريض جديد</button>
+</div>
 
     <div class="side-panel">
         <h3>تواصل معنا 📍</h3>
         <p style="text-align: right; line-height: 1.6;">
             📞 هاتف: 01122501159<br>
             💬 واتساب: 01020580002<br>
+            📞 040 4658010 <br>
+            📞 040 4650337 <br>
             🌍 شبراملس – امتداد شارع السوق - اعلي مسجد عباد الرحمن
         </p>
     </div>
@@ -197,9 +204,6 @@
             document.getElementById('b-num').innerText = count;
             document.getElementById('success-msg').style.display = 'block';
             
-            // توجيه للواتساب بعد 3 ثواني لضمان رؤية رقم الدور
-            const msg = `حجز ذكي جديد لمجمع شبراملس%0Aالمريض: ${pName}%0Aالطبيب: ${docName}%0Aرقم الدور: ${count}`;
-            setTimeout(() => { window.location.href = `https://wa.me/201122501159?text=${msg}`; }, 3500);
             
         } catch (err) {
             alert("خطأ في الاتصال");
