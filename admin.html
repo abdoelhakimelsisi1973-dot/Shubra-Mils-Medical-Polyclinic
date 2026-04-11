@@ -8,53 +8,86 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         body { font-family: 'Tajawal', sans-serif; background: #f4f7f6; margin: 0; padding: 20px; }
-        .dashboard-container { max-width: 1000px; margin: 0 auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
-        h2 { color: #0097a7; text-align: center; border-bottom: 2px solid #0097a7; padding-bottom: 10px; }
-        .controls { display: flex; gap: 10px; margin-bottom: 20px; align-items: center; background: #e0f7fa; padding: 15px; border-radius: 10px; flex-wrap: wrap; }
-        select { padding: 10px; border-radius: 5px; border: 1px solid #ccc; font-family: 'Tajawal'; flex: 1; min-width: 150px; }
-        button { border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; font-family: 'Tajawal'; }
+        
+        .main-layout { display: flex; gap: 20px; max-width: 1200px; margin: 0 auto; align-items: flex-start; flex-wrap: wrap; }
+        
+        .sidebar { width: 250px; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); flex-shrink: 0; }
+        .sidebar h3 { color: #0097a7; text-align: center; border-bottom: 2px solid #e0f7fa; padding-bottom: 10px; font-size: 18px; }
+        
+        .day-btn, .clinic-btn { display: block; width: 100%; padding: 10px; margin-bottom: 8px; border: 1px solid #0097a7; background: white; color: #0097a7; border-radius: 5px; cursor: pointer; font-family: 'Tajawal'; font-weight: bold; transition: 0.3s; }
+        .day-btn:hover, .clinic-btn:hover { background: #e0f7fa; }
+        .day-btn.active, .clinic-btn.active-clinic { background: #0097a7; color: white; }
+        
+        .dashboard-container { flex: 1; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); overflow-x: auto; min-width: 600px; }
+        h2 { color: #0097a7; text-align: center; margin-bottom: 5px; }
+        .current-date { text-align: center; color: #555; font-size: 16px; margin-bottom: 20px; font-weight: bold; }
+        
+        .controls { display: flex; gap: 10px; margin-bottom: 20px; align-items: center; background: #e0f7fa; padding: 15px; border-radius: 10px; justify-content: flex-end; flex-wrap: wrap;}
+        button, .control-label { border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; font-family: 'Tajawal'; }
         .btn-print { background: #0097a7; color: white; }
         .btn-save-img { background: #2e7d32; color: white; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; }
+        .btn-logo { background: #ff9800; color: white; }
+        .font-slider-container { display: flex; align-items: center; gap: 10px; background: white; padding: 5px 10px; border-radius: 5px; border: 1px solid #ccc; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; background: white; }
         th, td { border: 1px solid #ddd; padding: 12px; text-align: right; }
         th { background-color: #0097a7; color: white; }
-        #capture-area { padding: 10px; }
-        @media print { .controls { display: none; } }
+        #capture-area { padding: 10px; transition: font-size 0.3s; font-size: 16px; }
+        
+        @media print { 
+            .controls, .sidebar { display: none !important; } 
+            .main-layout { display: block; }
+            .dashboard-container { box-shadow: none; padding: 0; }
+        }
     </style>
 </head>
 <body>
 
-<div class="dashboard-container">
-    <h2>📋 لوحة تحكم حجوزات مجمع شبراملس</h2>
-
-    <div class="controls">
-        <label>اليوم:</label>
-        <select id="filterDay" onchange="window.loadBookings()">
-            <option value="الكل">عرض الكل</option>
-            <option value="السبت">السبت</option><option value="الأحد">الأحد</option>
-            <option value="الإثنين">الإثنين</option><option value="الثلاثاء">الثلاثاء</option>
-            <option value="الأربعاء">الأربعاء</option><option value="الخميس">الخميس</option>
-            <option value="الجمعة">الجمعة</option>
-        </select>
-        <button class="btn-print" onclick="window.print()">🖨️ طباعة</button>
-        <button class="btn-save-img" onclick="window.saveAsImage()">🖼️ حفظ كصورة</button>
+<div class="main-layout">
+    <div class="sidebar">
+        <h3>📅 أيام الأسبوع</h3>
+        <div id="daysButtons"></div>
+        
+        <div id="clinicsSection" style="display: none;">
+            <h3>🏥 عيادات اليوم</h3>
+            <div id="clinicsList"></div>
+        </div>
     </div>
 
-    <div id="capture-area">
-        <table id="bookingsTable">
-            <thead>
-                <tr>
-                    <th>الدور</th>
-                    <th>اسم المريض</th>
-                    <th>العيادة</th>
-                    <th>الطبيب</th>
-                    <th>وقت التسجيل</th>
-                </tr>
-            </thead>
-            <tbody id="tableBody"></tbody>
-        </table>
+    <div class="dashboard-container">
+        <h2>📋 لوحة تحكم حجوزات مجمع شبراملس</h2>
+        <div id="currentDate" class="current-date"></div>
+
+        <div class="controls">
+            <div class="font-slider-container">
+                <label for="fontSizeSlider" class="control-label" style="padding:0; cursor:default; color:#0097a7;">حجم الخط:</label>
+                <input type="range" id="fontSizeSlider" min="12" max="24" value="16" oninput="window.changeFontSize(this.value)">
+            </div>
+            <input type="file" id="logoUpload" accept="image/*" style="display:none;" onchange="window.loadLogo(event)">
+            <button class="btn-logo" onclick="document.getElementById('logoUpload').click()">🖼️ إضافة شعار</button>
+            <button class="btn-print" onclick="window.print()">🖨️ طباعة</button>
+            <button class="btn-save-img" onclick="window.saveAsImage()">💾 حفظ كصورة</button>
+        </div>
+
+        <div id="capture-area">
+            <h3 id="tableTitle" style="color: #0097a7; text-align: center; display: none;"></h3>
+            <table id="bookingsTable">
+                <thead>
+                    <tr>
+                        <th>الدور</th>
+                        <th>اسم المريض</th>
+                        <th>العيادة</th>
+                        <th>الطبيب</th>
+                        <th>وقت التسجيل</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <tr><td colspan='5' style='text-align:center'>يرجى اختيار اليوم ثم العيادة لعرض الحجوزات</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="loader" style="text-align:center; padding:20px; display:none;">جاري التحميل...</div>
     </div>
-    <div id="loader" style="text-align:center; padding:20px; display:none;">جاري التحميل...</div>
 </div>
 
 <script type="module">
@@ -73,53 +106,152 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    window.loadBookings = async function() {
+    const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    document.getElementById('currentDate').innerText = new Date().toLocaleDateString('ar-EG', dateOptions);
+
+    const schedule = {
+        "السبت": ["أسنان", "مسالك بولية", "أنف وأذن وحنجرة", "عيون"],
+        "الأحد": ["قلب وأوعية", "أنف وأذن وحنجرة", "أسنان", "عيون", "مسالك بولية", "عظام"],
+        "الإثنين": ["نساء وتوليد", "جراحة مخ وأعصاب", "أسنان", "مسالك بولية"],
+        "الثلاثاء": ["أنف وأذن وحنجرة", "نفسية وعصبية", "أسنان", "مسالك بولية", "عظام", "عيون"],
+        "الأربعاء": ["أسنان", "قلب وأوعية", "مسالك بولية", "أطفال وحديثي الولادة"],
+        "الخميس": ["قلب وأوعية", "أنف وأذن وحنجرة", "أسنان", "مسالك بولية", "عظام", "عيون"],
+        "الجمعة": ["باطنة ومناظير"]
+    };
+
+    let selectedDay = "";
+    let selectedClinic = "";
+
+    function initDays() {
+        const days = ["السبت", "الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة"];
+        const daysContainer = document.getElementById('daysButtons');
+        
+        days.forEach(day => {
+            const btn = document.createElement('button');
+            btn.innerText = day;
+            btn.className = 'day-btn';
+            btn.onclick = (e) => selectDay(day, e.target);
+            daysContainer.appendChild(btn);
+        });
+    }
+
+    window.selectDay = function(day, btnElement) {
+        selectedDay = day;
+        document.querySelectorAll('.day-btn').forEach(btn => btn.classList.remove('active'));
+        btnElement.classList.add('active');
+
+        const clinicsContainer = document.getElementById('clinicsList');
+        clinicsContainer.innerHTML = '';
+        document.getElementById('clinicsSection').style.display = 'block';
+        
+        document.getElementById('tableBody').innerHTML = "<tr><td colspan='5' style='text-align:center'>يرجى اختيار العيادة</td></tr>";
+        document.getElementById('tableTitle').style.display = 'none';
+
+        const clinics = schedule[day] || [];
+        if(clinics.length === 0) {
+            clinicsContainer.innerHTML = '<span style="color:#666; font-size:14px; display:block; text-align:center;">لا توجد عيادات مسجلة</span>';
+            return;
+        }
+
+        clinics.forEach(clinic => {
+            const btn = document.createElement('button');
+            btn.innerText = clinic;
+            btn.className = 'clinic-btn';
+            btn.onclick = (e) => selectClinic(clinic, e.target);
+            clinicsContainer.appendChild(btn);
+        });
+    }
+
+    window.selectClinic = async function(clinic, btnElement) {
+        selectedClinic = clinic;
+        document.querySelectorAll('.clinic-btn').forEach(btn => btn.classList.remove('active-clinic'));
+        btnElement.classList.add('active-clinic');
+
+        const tableTitle = document.getElementById('tableTitle');
+        tableTitle.innerText = `حجوزات عيادة ${clinic} - يوم ${selectedDay}`;
+        tableTitle.style.display = 'block';
+
+        await loadClinicBookings(selectedDay, clinic);
+    }
+
+    window.loadClinicBookings = async function(day, clinic) {
         const tableBody = document.getElementById('tableBody');
         const loader = document.getElementById('loader');
-        const day = document.getElementById('filterDay').value;
         tableBody.innerHTML = "";
         loader.style.display = "block";
 
         try {
             let q = collection(db, "bookings");
-            if (day !== "الكل") {
-                q = query(q, where("bookingDay", "==", day), orderBy("timestamp", "asc"));
-            } else {
-                q = query(q, orderBy("timestamp", "desc"));
-            }
+            q = query(q, where("bookingDay", "==", day), orderBy("timestamp", "asc"));
 
             const snap = await getDocs(q);
             loader.style.display = "none";
-            if (snap.empty) {
-                tableBody.innerHTML = "<tr><td colspan='5' style='text-align:center'>لا توجد حجوزات</td></tr>";
-                return;
-            }
-
+            
+            let found = false;
             snap.forEach(doc => {
                 const d = doc.data();
-                const time = d.timestamp ? d.timestamp.toDate().toLocaleTimeString('ar-EG', {hour: '2-digit', minute:'2-digit'}) : '--';
-                tableBody.innerHTML += `<tr>
-                    <td><b>${d.orderNumber}</b></td>
-                    <td>${d.patientName}</td>
-                    <td>${d.specialty || 'عيادة'}</td>
-                    <td>${d.doctorName}</td>
-                    <td>${time}</td>
-                </tr>`;
+                // يمكن أن يكون الاسم في القاعدة "رمد" أو "عيون"، لذا نغطي الاثنين إذا تم اختيار عيون
+                const specialtyMatch = d.specialty === clinic || 
+                                     (clinic === 'عيون' && (d.specialty === 'رمد' || d.specialty === 'رمد وجراحات العيون')) ||
+                                     (clinic === 'أنف وأذن وحنجرة' && d.specialty === 'أنف وأذن') ||
+                                     (clinic === 'باطنة ومناظير' && d.specialty === 'باطنة');
+
+                if(specialtyMatch) {
+                    found = true;
+                    const time = d.timestamp ? d.timestamp.toDate().toLocaleTimeString('ar-EG', {hour: '2-digit', minute:'2-digit'}) : '--';
+                    tableBody.innerHTML += `<tr>
+                        <td><b>${d.orderNumber}</b></td>
+                        <td>${d.patientName}</td>
+                        <td>${d.specialty || clinic}</td>
+                        <td>${d.doctorName}</td>
+                        <td>${time}</td>
+                    </tr>`;
+                }
             });
-        } catch (e) { console.error(e); loader.innerText = "خطأ في التحميل"; }
+
+            if (!found) {
+                tableBody.innerHTML = `<tr><td colspan='5' style='text-align:center'>لا توجد حجوزات في عيادة ${clinic} يوم ${selectedDay}</td></tr>`;
+            }
+        } catch (e) { 
+            console.error(e); 
+            loader.innerText = "حدث خطأ في التحميل، يرجى المحاولة مرة أخرى"; 
+        }
     }
 
     window.saveAsImage = function() {
         const area = document.getElementById('capture-area');
         html2canvas(area, { scale: 2 }).then(canvas => {
             const link = document.createElement('a');
-            link.download = `حجوزات_${document.getElementById('filterDay').value}.png`;
+            link.download = `حجوزات_${selectedClinic || 'عام'}_${selectedDay || 'اليوم'}.png`;
             link.href = canvas.toDataURL("image/png", 0.7);
             link.click();
         });
     }
 
-    window.loadBookings();
+    window.changeFontSize = function(size) {
+        document.getElementById('capture-area').style.fontSize = size + 'px';
+    }
+
+    window.loadLogo = function(event) {
+        const reader = new FileReader();
+        reader.onload = function(){
+            let img = document.getElementById('clinicLogo');
+            if(!img) {
+                img = document.createElement('img');
+                img.id = 'clinicLogo';
+                img.style.maxHeight = '90px';
+                img.style.display = 'block';
+                img.style.margin = '0 auto 15px';
+                document.getElementById('capture-area').prepend(img);
+            }
+            img.src = reader.result;
+        };
+        if(event.target.files[0]) {
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    }
+
+    initDays();
 </script>
 </body>
 </html>
