@@ -165,7 +165,9 @@
 <script>
     // رابط جوجل شيت الخاص بك (CSV للقراءة)
 <script>
-const sheetCSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRbnDZjQKUzZQBjvc3b1jD8Jzy8Ndeif51RWrLohsmnKZVEmJrGxSqXS0Q8FlTb5y-M6vHuScw_vlTv/pub?output=csv";
+<script>
+    // 1. البيانات الأساسية
+    const sheetCSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRbnDZjQKUzZQBjvc3b1jD8Jzy8Ndeif51RWrLohsmnKZVEmJrGxSqXS0Q8FlTb5y-M6vHuScw_vlTv/pub?output=csv";
 
     const scheduleData = {
         "السبت": { "أسنان": ["د. رنا حمودة (04:00 عصراً)", "د. خالد الداهس (09:00 مساءً)"], "مسالك": ["د. علي منتصر"], "أنف وأذن": ["د. محمد هيكل"], "عيون": ["أخصائي محمد مجدي سعده"] },
@@ -177,20 +179,27 @@ const sheetCSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRbnDZjQKUzZQB
         "الجمعة": { "باطنة ومناظير": ["د. عزيز بدير (02:00 ظهراً)"] }
     };
 
-    // تعريف وظائف القوائم لتكون مقروءة بوضوح في الـ HTML
+    // 2. وظيفة تحديث العيادات (تشتغل لما تختار اليوم)
     window.updateSpecialties = function() {
         const day = document.getElementById('bDay').value;
         const specSelect = document.getElementById('specialty');
         const docSelect = document.getElementById('doctorName');
         
+        // تصفير القوائم
         specSelect.innerHTML = '<option value="">اختر العيادة...</option>';
         docSelect.innerHTML = '<option value="">اختر الطبيب...</option>';
         
         if(day && scheduleData[day]) {
-            Object.keys(scheduleData[day]).forEach(s => specSelect.add(new Option(s, s)));
+            Object.keys(scheduleData[day]).forEach(s => {
+                let opt = document.createElement('option');
+                opt.value = s;
+                opt.text = s;
+                specSelect.add(opt);
+            });
         }
-    }
+    };
 
+    // 3. وظيفة تحديث الأطباء (تشتغل لما تختار العيادة)
     window.updateDoctors = function() {
         const day = document.getElementById('bDay').value;
         const spec = document.getElementById('specialty').value;
@@ -199,68 +208,71 @@ const sheetCSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRbnDZjQKUzZQB
         docSelect.innerHTML = '<option value="">اختر الطبيب...</option>';
         
         if(day && spec && scheduleData[day][spec]) {
-            scheduleData[day][spec].forEach(d => docSelect.add(new Option(d, d)));
+            scheduleData[day][spec].forEach(d => {
+                let opt = document.createElement('option');
+                opt.value = d;
+                opt.text = d;
+                docSelect.add(opt);
+            });
         }
-    }
+    };
 
-    // معالجة زر الإرسال والحفظ
+    // 4. كود الحجز وحساب الدور (Submit)
     document.getElementById('booking-form').addEventListener('submit', async (e) => {
         e.preventDefault();
-        document.getElementById('btn').style.display = 'none';
-        document.getElementById('loader').style.display = 'block';
+        
+        const btn = document.getElementById('btn');
+        const loader = document.getElementById('loader');
+        const pName = document.getElementById('pName').value;
+        const selectedDay = document.getElementById('bDay').value;
+        const selectedSpec = document.getElementById('specialty').value;
+        const selectedDoc = document.getElementById('doctorName').value;
+
+        btn.style.display = 'none';
+        loader.style.display = 'block';
 
         try {
-            const pName = document.getElementById('pName').value;
-            const selectedSpec = document.getElementById('specialty').value;
-            const selectedDay = document.getElementById('bDay').value;
-            const selectedDoc = document.getElementById('doctorName').value;
-
-            // 1. جلب البيانات من جوجل شيت لحساب الدور المتسلسل للعيادة
             const response = await fetch(sheetCSV);
             const data = await response.text();
             const rows = data.split('\n');
-            
-            let count = 1; // نبدأ من 1 للمريض الجديد
-            
+            let count = 1;
+
             rows.forEach(row => {
                 const cols = row.split(',').map(c => c.trim().replace(/"/g, ''));
-                if (cols.length < 2) return;
-                
-                const sheetClinic = cols[2]; 
-                const sheetDay = cols[4]; // تأكد أن عمود اليوم هو الخامس في شيتك
-
-                if(sheetClinic === selectedSpec && sheetDay === selectedDay) {
+                if(cols[2] === selectedSpec && cols[5] === selectedDay) {
                     count++;
                 }
             });
 
-            // 2. إرسال البيانات للحفظ في جوجل شيت (تمت إضافتها لضمان الحفظ)
-            // ⚠️ تنبيه: ضع رابط الـ Web App الخاص بك (Script URL) بدلاً من هذه الكلمة
-            const scriptURL = "رابط_تطبيق_جوجل_سكربت_الخاص_بك_هنا"; 
+            // تأكد من وضع رابط الـ Apps Script هنا ليعمل الحفظ
+            const scriptURL = "رابط_تطبيق_جوجل_سكربت_الخاص_بك"; 
             
-            const formData = new FormData();
-            formData.append('pName', pName);
-            formData.append('bDay', selectedDay);
-            formData.append('specialty', selectedSpec);
-            formData.append('doctorName', selectedDoc);
-            formData.append('orderNumber', count); // إرسال رقم الدور للشيت
+            await fetch(scriptURL, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: new URLSearchParams({
+                    "pName": pName,
+                    "bDay": selectedDay,
+                    "specialty": selectedSpec,
+                    "doctorName": selectedDoc,
+                    "orderNumber": count
+                })
+            });
 
-            await fetch(scriptURL, { method: 'POST', body: formData, mode: 'no-cors' });
-
-            // 3. إظهار النتيجة للمريض
-            document.getElementById('loader').style.display = 'none';
+            loader.style.display = 'none';
             document.getElementById('booking-form').style.display = 'none';
             document.getElementById('res-name').innerText = pName;
             document.getElementById('b-num').innerText = count;
             document.getElementById('success-msg').style.display = 'block';
 
-        } catch (e) {
-            console.error("Error:", e);
-            alert("حدث خطأ في الاتصال.. حاول مرة أخرى");
-            document.getElementById('btn').style.display = 'block';
-            document.getElementById('loader').style.display = 'none';
+        } catch (error) {
+            console.error(error);
+            alert("حدث خطأ، حاول مرة أخرى");
+            btn.style.display = 'block';
+            loader.style.display = 'none';
         }
     });
+</script>  });
 </script> });
 </script>
 </body>
