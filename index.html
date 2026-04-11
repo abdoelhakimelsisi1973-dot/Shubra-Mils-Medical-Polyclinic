@@ -351,58 +351,7 @@ form.addEventListener('submit', e => {
 
 
     })
-
-       async function loadData(day, clinic, btn) {
-        // تحديد العناصر (تأكد أن الـ ID مطابق لما عندك)
-        const tbody = document.getElementById('tableBody');
-        const loader = document.getElementById('loader');
-        
-        if(tbody) tbody.innerHTML = "<tr><td colspan='5' style='text-align:center'>جاري جلب البيانات...</td></tr>";
-        if(loader) loader.style.display = "block";
-
-        try {
-            // 1. جلب البيانات بناءً على اليوم المختار فقط لضمان السرعة
-            const q = query(collection(db, "bookings"), where("bookingDay", "==", day.trim()));
-            const snap = await getDocs(q);
-            
-            if(loader) loader.style.display = "none";
-            if(tbody) tbody.innerHTML = "";
-            
-            let found = false;
-            let counter = 1;
-
-            snap.forEach(doc => {
-                const d = doc.data();
-                // تنظيف اسم التخصص من أي مسافات زائدة في قاعدة البيانات
-                const dbSpecialty = (d.specialty || "").trim();
-                const targetClinic = clinic.trim();
-
-                // 2. التحقق من مطابقة العيادة (سواء كانت مطابقة تامة أو جزء من النص)
-                if (dbSpecialty.includes(targetClinic) || targetClinic.includes(dbSpecialty)) {
-                    found = true;
-                    // تأكد أن أسماء الأعمدة (patientName, doctorName) مطابقة لما في Firebase
-                    tbody.innerHTML += `
-                        <tr>
-                            <td><b>${d.orderNumber || counter}</b></td>
-                            <td>${d.patientName || 'بدون اسم'}</td>
-                            <td>${d.specialty || clinic}</td>
-                            <td>${d.doctorName || '-'}</td>
-                            <td>${d.timestamp ? d.timestamp.toDate().toLocaleTimeString('ar-EG') : '-'}</td>
-                        </tr>`;
-                    counter++;
-                }
-            });
-
-            if (!found && tbody) {
-                tbody.innerHTML = "<tr><td colspan='5' style='text-align:center'>لا توجد حجوزات مسجلة لعيادة " + clinic + " ليوم " + day + "</td></tr>";
-            }
-        } catch (e) {
-            console.error("Firebase Error:", e);
-            if(tbody) tbody.innerHTML = "<tr><td colspan='5' style='text-align:center; color:red;'>خطأ في الاتصال: " + e.message + "</td></tr>";
-        }
-    }
-        
-  .catch(() => { alert('حدث خطأ! يرجى المحاولة مرة أخرى.'); document.getElementById('btn').style.display = 'block'; });
+    .catch(() => { alert('حدث خطأ! يرجى المحاولة مرة أخرى.'); document.getElementById('btn').style.display = 'block'; });
 });
 </script>
 </body>
