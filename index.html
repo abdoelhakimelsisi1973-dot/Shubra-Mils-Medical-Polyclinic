@@ -119,81 +119,89 @@
 
 <script>
     // رابط جوجل شيت الخاص بك (CSV للقراءة)
-    const sheetCSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRbnDZjQKUzZQBjvc3b1jD8Jzy8Ndeif51RWrLohsmnKZVEmJrGxSqXS0Q8FlTb5y-M6vHuScw_vlTv/pub?output=csv";
+<script>
+// 1. رابط الـ Web App الخاص بجوجل شيت
+const scriptURL = 'https://script.google.com/macros/s/AKfycbwzVo2w7Jjzjo5icuSgXV4fj6BJGu2gdcVSZBHcss6heWriEXtGt7AMoFJTpnYrfvdC-w/exec';
 
-    const scheduleData = {
-        "السبت": { "أسنان": ["د. رنا حمودة (04:00 عصراً)", "د. خالد الداهس (09:00 مساءً)"], "مسالك": ["د. علي منتصر"], "أنف وأذن": ["د. محمد هيكل"], "عيون": ["أخصائي محمد مجدي سعده"] },
-        "الأحد": { "قلب": ["د. أحمد مسعد الغلبان"], "أسنان": ["د. محمد علاء", "د. محمود دهب"], "عيون": ["أخصائي د. خالد الشيخ"], "عظام": ["أخصائي إبراهيم مطاوع"] },
-        "الإثنين": { "نساء": ["د. هيام السمراوي"], "مخ وأعصاب": ["د. محمد سلام"], "أسنان": ["د. رنا حمودة", "د. خالد الداهس"] },
-        "الثلاثاء": { "نفسية": ["د. آلاء الحوت"], "أسنان": ["د. محمد علاء", "د. محمود دهب"], "عظام": ["أخصائي إبراهيم مطاوع"] },
-        "الأربعاء": { "أسنان": ["د. رنا حمودة", "د. خالد الداهس"], "قلب": ["د. أحمد مسعد الغلبان"], "اطفال": ["د. جينا عبدالله الشافعي"] },
-        "الخميس": { "قلب": ["د. أحمد مسعد الغلبان"], "أنف وأذن": ["د. محمد هيكل"], "عظام": ["أخصائي إبراهيم مطاوع"] },
-        "الجمعة": { "باطنة ومناظير": ["د. عزيز بدير (02:00 ظهراً)"] }
-    };
+// 2. بيانات الخدمات والأطباء
+const constantServices = { 
+    "طوارئ 24 ساعة": ["طبيب الطوارئ المناوب"], 
+    "معمل التحاليل": ["د. ثريا القاضي", "د. فريال محمود رزق"] 
+};
 
-    window.updateSpecialties = function() {
-        const day = document.getElementById('bDay').value;
-        const specSelect = document.getElementById('specialty');
-        specSelect.innerHTML = '<option value="">اختر العيادة...</option>';
-        if(day && scheduleData[day]) {
-            Object.keys(scheduleData[day]).forEach(s => specSelect.add(new Option(s, s)));
-        }
+const scheduleData = {
+    "السبت": { "أسنان": ["د. رنا حمودة (04:00 عصراً)", "د. خالد الداهس (09:00 مساءً)"], "مسالك": ["د. علي منتصر (07:00 مساءً)"], "أنف وأذن": ["د. محمد هيكل (07:00 مساءً)"], "عيون": ["أخصائي محمد مجدي سعده (02:00 ظهراً)"] },
+    "الأحد": { "قلب": ["د. أحمد مسعد الغلبان (06:00 مساءً)"], "أسنان": ["د. محمد علاء (03:00 مساءً)", "د. محمود دهب (08:00 مساءً)"], "عيون": ["أخصائي د. خالد الشيخ (05:00 عصراً)"], "عظام": ["أخصائي إبراهيم مطاوع (04:00 عصراً)"] },
+    "الإثنين": { "نساء": ["د. هيام السمراوي (01:00 ظهراً)"], "مخ وأعصاب": ["د. محمد سلام (08:00 مساءً)"], "أسنان": ["د. رنا حمودة", "د. خالد الداهس"], "مسالك": ["د. علي منتصر"] },
+    "الثلاثاء": { "نفسية": ["د. آلاء الحوت (06:00 مساءً)"], "أسنان": ["د. محمد علاء", "د. محمود دهب"], "عظام": ["أخصائي إبراهيم مطاوع"], "عيون": ["أخصائي محمد مجدي سعده"] },
+    "الأربعاء": { "أسنان": ["د. رنا حمودة", "د. خالد الداهس"], "قلب": ["د. أحمد مسعد الغلبان"], "اطفال": ["د. جينا عبدالله الشافعي (06:00 مساءً)"] },
+    "الخميس": { "قلب": ["د. أحمد مسعد الغلبان"], "أنف وأذن": ["د. محمد هيكل"], "عظام": ["أخصائي إبراهيم مطاوع"], "عيون": ["أخصائي محمد مجدي سعده"] },
+    "الجمعة": { "باطنة ومناظير": ["د. عزيز بدير (02:00 ظهراً)"] }
+};
+
+// 3. وظائف تحديث القوائم
+function updateSpecialties() {
+    const day = document.getElementById('bDay').value;
+    const specSelect = document.getElementById('specialty');
+    specSelect.innerHTML = '<option value="">اختر العيادة...</option>';
+    if(day) {
+        Object.keys(constantServices).forEach(s => specSelect.add(new Option(s, s)));
+        if(scheduleData[day]) Object.keys(scheduleData[day]).forEach(s => specSelect.add(new Option(s, s)));
     }
+}
 
-    window.updateDoctors = function() {
-        const day = document.getElementById('bDay').value;
+function updateDoctors() {
+    const day = document.getElementById('bDay').value;
+    const spec = document.getElementById('specialty').value;
+    const docSelect = document.getElementById('doctorName');
+    docSelect.innerHTML = '<option value="">اختر الطبيب...</option>';
+    let list = constantServices[spec] || (scheduleData[day] ? scheduleData[day][spec] : null);
+    if(list) list.forEach(d => docSelect.add(new Option(d, d)));
+}
+
+// 4. معالجة إرسال الفورم
+const form = document.getElementById('booking-form');
+form.addEventListener('submit', e => {
+    e.preventDefault();
+    
+    // إخفاء الزر وإظهار اللودر
+    document.getElementById('btn').style.display = 'none';
+    document.getElementById('loader').style.display = 'block';
+
+    fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+    .then(response => {
+        document.getElementById('loader').style.display = 'none';
+        form.style.display = 'none';
+        
+        // حساب رقم الدور محلياً
         const spec = document.getElementById('specialty').value;
-        const docSelect = document.getElementById('doctorName');
-        docSelect.innerHTML = '<option value="">اختر الطبيب...</option>';
-        if(day && spec && scheduleData[day][spec]) {
-            scheduleData[day][spec].forEach(d => docSelect.add(new Option(d, d)));
+        const todayStr = new Date().toLocaleDateString();
+        let dailyCounts = {};
+        if (localStorage.getItem('bDate') === todayStr) {
+            let stored = localStorage.getItem('dailyCounts');
+            if (stored) dailyCounts = JSON.parse(stored);
+        } else {
+            localStorage.setItem('bDate', todayStr);
         }
-    }
+        
+        let count = (dailyCounts[spec] || 0) + 1;
+        dailyCounts[spec] = count;
+        localStorage.setItem('dailyCounts', JSON.stringify(dailyCounts));
 
-    window.resetKimoForm = function() {
-        document.getElementById('booking-form').reset();
-    }
-
-    document.getElementById('booking-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        document.getElementById('btn').style.display = 'none';
-        document.getElementById('loader').style.display = 'block';
-
-        try {
-            const selectedSpec = document.getElementById('specialty').value;
-            const selectedDay = document.getElementById('bDay').value;
-
-            // جلب عدد الحجوزات الحالية من جوجل شيت لحساب رقم الدور
-            const response = await fetch(sheetCSV);
-            const data = await response.text();
-            const rows = data.split('\n');
-            
-            let count = 1;
-            rows.forEach(row => {
-                const cols = row.split(',');
-                // البحث عن الحجوزات التي تطابق نفس اليوم والعيادة
-                if(cols[2] && cols[2].trim() === selectedDay && cols[1] && cols[1].trim() === selectedSpec) {
-                    count++;
-                }
-            });
-
-            // إظهار رسالة النجاح
-            document.getElementById('loader').style.display = 'none';
-            document.getElementById('booking-form').style.display = 'none';
-            document.getElementById('res-name').innerText = document.getElementById('pName').value;
-            document.getElementById('b-num').innerText = count;
-            document.getElementById('success-msg').style.display = 'block';
-
-            // تنبيه: هنا تحتاج رابط Google Apps Script لإرسال البيانات فعلياً
-            console.log("تم حساب رقم الدور بنجاح من جوجل شيت");
-
-        } catch (e) {
-            console.error("Error:", e);
-            alert("حدث خطأ في الاتصال بجوجل شيت");
-            document.getElementById('btn').style.display = 'block';
-            document.getElementById('loader').style.display = 'none';
-        }
+        // عرض رسالة النجاح
+        document.getElementById('res-name').innerText = document.getElementById('pName').value;
+        document.getElementById('res-day').innerText = document.getElementById('bDay').value;
+        document.getElementById('res-doc').innerText = document.getElementById('doctorName').value;
+        document.getElementById('b-num').innerText = count;
+        document.getElementById('success-msg').style.display = 'block';
+    })
+    .catch(error => {
+        alert('حدث خطأ! تأكد من إعدادات الـ Script في جوجل شيت');
+        document.getElementById('btn').style.display = 'block';
+        document.getElementById('loader').style.display = 'none';
     });
+});
+</script> });
 </script>
 </body>
 </html>
