@@ -3,170 +3,180 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة تحكم مجمع شبراملس الطبي</title>
+    <title>لوحة تحكم مجمع شبراملس</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
             --primary-color: #0097a7;
             --accent-color: #00bcd4;
-            --bg-color: #f0f4f8;
-            --card-bg: #ffffff;
         }
-        body { font-family: 'Tajawal', sans-serif; background-color: var(--bg-color); margin: 0; padding: 20px; }
-        .dashboard { max-width: 1200px; margin: 0 auto; background: var(--card-bg); padding: 30px; border-radius: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); }
+        body { font-family: 'Tajawal', sans-serif; background: #f4f7f6; margin: 0; padding: 20px; }
         
-        header { text-align: center; margin-bottom: 30px; border-bottom: 3px solid var(--primary-color); padding-bottom: 20px; }
-        h1 { color: var(--primary-color); margin: 0; font-size: 28px; }
-
-        .filters { display: flex; gap: 15px; margin-bottom: 25px; flex-wrap: wrap; justify-content: center; background: #e0f2f1; padding: 20px; border-radius: 15px; }
-        select, button { padding: 12px 20px; border-radius: 12px; border: 2px solid #b2dfdb; font-family: 'Tajawal'; font-size: 16px; font-weight: bold; }
-        
-        .refresh-btn { background: var(--primary-color); color: white; border: none; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
-        .refresh-btn:hover { background: var(--accent-color); transform: translateY(-2px); }
-
-        .table-container { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { padding: 18px; text-align: right; border-bottom: 1px solid #eee; }
-        th { background-color: var(--primary-color); color: white; font-size: 17px; }
-        tr:nth-child(even) { background-color: #f9f9f9; }
-        tr:hover { background-color: #f1f8f9; }
-        
-        .order-badge { background: #0097a7; color: white; padding: 5px 12px; border-radius: 8px; font-weight: 800; }
-        #loader { text-align: center; display: none; padding: 20px; font-size: 18px; color: var(--primary-color); font-weight: bold; }
-        
-        @media (max-width: 768px) {
-            .filters { flex-direction: column; }
-            th, td { padding: 12px; font-size: 14px; }
+        /* شريط الإشعارات المتحرك */
+        .news-ticker { 
+            position: fixed; top: 0; left: 0; width: 100%; 
+            background: #d32f2f; color: white; padding: 10px 0; 
+            overflow: hidden; z-index: 2000; font-weight: bold; 
         }
+        .ticker-text { 
+            display: inline-block; white-space: nowrap; 
+            animation: marquee 20s linear infinite; padding-right: 100%;
+        }
+        @keyframes marquee { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+
+        .dashboard-container { max-width: 1000px; margin: 50px auto 0; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
+        h2 { color: var(--primary-color); text-align: center; border-bottom: 2px solid var(--primary-color); padding-bottom: 10px; margin-bottom: 5px; }
+        .date-display { text-align: center; color: #555; font-weight: bold; margin-bottom: 20px; font-size: 1.1em; }
+        
+        .controls { display: flex; gap: 10px; margin-bottom: 20px; align-items: center; background: #e0f7fa; padding: 15px; border-radius: 10px; flex-wrap: wrap; }
+        select { padding: 10px; border-radius: 5px; border: 1px solid #ccc; font-family: 'Tajawal'; flex: 1; min-width: 150px; }
+        button { border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; font-family: 'Tajawal'; }
+        .btn-print { background: var(--primary-color); color: white; }
+        .btn-save-img { background: #2e7d32; color: white; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: right; }
+        th { background-color: var(--primary-color); color: white; }
+        #capture-area { padding: 10px; }
+        @media print { .controls, .news-ticker { display: none; } .dashboard-container { margin-top: 0; } }
     </style>
 </head>
 <body>
 
-<div class="dashboard">
-    <header>
-        <h1>📊 إدارة حجوزات مجمع شبراملس</h1>
-        <p style="color: #668; font-weight: bold;">متابعة المواعيد المباشرة من Google Sheets</p>
-    </header>
+<div class="news-ticker">
+    <div class="ticker-text" id="latest-booking">جاري فحص آخر التحديثات...</div>
+</div>
 
-    <div class="filters">
-        <select id="filterDay">
-            <option value="">📅 كل الأيام</option>
-            <option value="السبت">السبت</option>
-            <option value="الأحد">الأحد</option>
-            <option value="الإثنين">الإثنين</option>
-            <option value="الثلاثاء">الثلاثاء</option>
-            <option value="الأربعاء">الأربعاء</option>
-            <option value="الخميس">الخميس</option>
-            <option value="الجمعة">الجمعة</option>
-        </select>
-
-        <select id="filterSpecialty">
-            <option value="">🏥 كل العيادات</option>
-            <option value="أسنان">أسنان</option>
-            <option value="عظام">عظام</option>
-            <option value="قلب">قلب</option>
-            <option value="عيون">عيون</option>
-            <option value="مخ وأعصاب">مخ وأعصاب</option>
-            <option value="باطنة">باطنة</option>
-            <option value="أنف وأذن">أنف وأذن</option>
-        </select>
-
-        <button class="refresh-btn" onclick="fetchSheetData()">تحديث القائمة 🔄</button>
+<div class="dashboard-container">
+    <h2>📋 لوحة تحكم حجوزات مجمع شبراملس</h2>
+    <div class="date-display">
+        متابعة المواعيد المباشرة من Google Sheets <br>
+        <span id="today-date" style="color: var(--primary-color);"></span>
     </div>
 
-    <div id="loader">🔄 جاري سحب البيانات من السحابة...</div>
+    <div class="controls">
+        <label>اليوم:</label>
+        <select id="filterDay" onchange="window.loadBookings()">
+            <option value="الكل">عرض الكل</option>
+            <option value="السبت">السبت</option><option value="الأحد">الأحد</option>
+            <option value="الإثنين">الإثنين</option><option value="الثلاثاء">الثلاثاء</option>
+            <option value="الأربعاء">الأربعاء</option><option value="الخميس">الخميس</option>
+            <option value="الجمعة">الجمعة</option>
+        </select>
+        <button class="btn-print" onclick="window.print()">🖨️ طباعة</button>
+        <button class="btn-save-img" onclick="window.saveAsImage()">🖼️ حفظ كصورة</button>
+    </div>
 
-    <div class="table-container">
-        <table>
+    <div id="capture-area">
+        <table id="bookingsTable">
             <thead>
                 <tr>
-                    <th>رقم الدور</th>
+                    <th>الدور</th>
                     <th>اسم المريض</th>
                     <th>العيادة</th>
-                    <th>الطبيب المعالج</th>
+                    <th>الطبيب</th>
                     <th>وقت التسجيل</th>
                 </tr>
             </thead>
-            <tbody id="tableBody">
-                </tbody>
+            <tbody id="tableBody"></tbody>
         </table>
     </div>
+    <div id="loader" style="text-align:center; padding:20px; display:none;">جاري التحميل...</div>
 </div>
 
 <script>
-    // رابط جوجل شيت (CSV)
-    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRbnDZjQKUzZQBjvc3b1jD8Jzy8Ndeif51RWrLohsmnKZVEmJrGxSqXS0Q8FlTb5y-M6vHuScw_vlTv/pub?output=csv";
+    // رابط جوجل شيت الخاص بك (CSV)
+    const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRbnDZjQKUzZQBjvc3b1jD8Jzy8Ndeif51RWrLohsmnKZVEmJrGxSqXS0Q8FlTb5y-M6vHuScw_vlTv/pub?output=csv";
 
-    async function fetchSheetData() {
-        const tbody = document.getElementById('tableBody');
+    // عرض التاريخ الحالي
+    function updateDate() {
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('today-date').innerText = new Date().toLocaleDateString('ar-EG', options);
+    }
+
+    window.loadBookings = async function() {
+        const tableBody = document.getElementById('tableBody');
         const loader = document.getElementById('loader');
         const dayFilter = document.getElementById('filterDay').value;
-        const specFilter = document.getElementById('filterSpecialty').value;
+        const ticker = document.getElementById('latest-booking');
 
-        loader.style.display = 'block';
-        tbody.innerHTML = '';
+        tableBody.innerHTML = "";
+        loader.style.display = "block";
 
         try {
-            const response = await fetch(CSV_URL);
-            const text = await response.text();
+            const response = await fetch(SHEET_URL);
+            const data = await response.text();
+            const rows = data.split('\n').slice(1);
             
-            // تحويل الـ CSV لصفوف ومسح العناوين
-            const rows = text.split('\n').slice(1);
-            let matchCount = 0;
+            loader.style.display = "none";
+            let found = false;
 
-            rows.forEach(row => {
-                // تقسيم البيانات مع تنظيف الفراغات
+            // تحديث شريط آخر حجز (آخر صف في الملف)
+            if (rows.length > 0) {
+                const lastRow = rows[rows.length - 1].split(',');
+                if (lastRow.length > 1) {
+                    ticker.innerHTML = `⚠️ تم إضافة حجز جديد: ${lastRow[1]} - عيادة ${lastRow[2]} (رقم الدور: ${lastRow[4] || '-'})`;
+                }
+            }
+
+            // تعبئة الجدول
+            rows.reverse().forEach(row => {
                 const cols = row.split(',').map(c => c.trim());
                 if (cols.length < 2) return;
 
-                const time      = cols[0]; // الطابع الزمني
-                const pName     = cols[1]; // اسم المريض
-                const specialty = cols[2]; // التخصص
-                const doctor    = cols[3] || '-'; // الطبيب
-                const orderNo   = cols[4] || '-'; // رقم الدور
+                const timestamp = cols[0];
+                const patient   = cols[1];
+                const specialty = cols[2];
+                const doctor    = cols[3] || '-';
+                const orderNum  = cols[4] || '-';
 
-                // تحديد اليوم من التاريخ في العمود الأول
+                // تحديد اليوم من التاريخ
                 let rowDay = "";
-                if (time) {
-                    const parts = time.split(' ')[0].split('/');
-                    const dateObj = new Date(parts[2], parts[0] - 1, parts[1]);
-                    const days = ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
-                    rowDay = days[dateObj.getDay()];
+                if (timestamp) {
+                    const dateParts = timestamp.split(' ')[0].split('/');
+                    const dateObj = new Date(dateParts[2], dateParts[0] - 1, dateParts[1]);
+                    const daysArr = ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
+                    rowDay = daysArr[dateObj.getDay()];
                 }
 
-                // فلترة البيانات
-                const dayMatch = !dayFilter || rowDay === dayFilter;
-                const specMatch = !specFilter || specialty.includes(specFilter);
-
-                if (dayMatch && specMatch) {
-                    matchCount++;
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td><span class="order-badge">${orderNo}</span></td>
-                        <td><b>${pName}</b></td>
+                if (dayFilter === "الكل" || rowDay === dayFilter) {
+                    found = true;
+                    tableBody.innerHTML += `<tr>
+                        <td><b>${orderNum}</b></td>
+                        <td>${patient}</td>
                         <td>${specialty}</td>
                         <td>${doctor}</td>
-                        <td style="color: #666; font-size: 13px;">${time.split(' ')[1] || '-'}</td>
-                    `;
-                    tbody.appendChild(tr);
+                        <td>${timestamp.split(' ')[1] || '--'}</td>
+                    </tr>`;
                 }
             });
 
-            if (matchCount === 0) {
-                tbody.innerHTML = "<tr><td colspan='5' style='text-align:center; padding: 40px;'>لا توجد حجوزات مسجلة لهذه الاختيارات حالياً</td></tr>";
+            if (!found) {
+                tableBody.innerHTML = "<tr><td colspan='5' style='text-align:center'>لا توجد حجوزات لهذا اليوم</td></tr>";
             }
-
-        } catch (err) {
-            console.error(err);
-            tbody.innerHTML = "<tr><td colspan='5' style='text-align:center; color:red;'>⚠️ فشل جلب البيانات.. تأكد من اتصال الإنترنت أو إعدادات الملف</td></tr>";
-        } finally {
-            loader.style.display = 'none';
+        } catch (e) {
+            console.error(e);
+            loader.innerText = "خطأ في الاتصال بجدول البيانات";
         }
     }
 
-    // تشغيل الجلب تلقائياً عند فتح الصفحة
-    window.onload = fetchSheetData;
-</script>
+    window.saveAsImage = function() {
+        const area = document.getElementById('capture-area');
+        html2canvas(area, { scale: 2 }).then(canvas => {
+            const link = document.createElement('a');
+            link.download = `حجوزات_مجمع_شبراملس.png`;
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+        });
+    }
 
+    // تشغيل الدوال عند الفتح
+    updateDate();
+    window.loadBookings();
+    
+    // تحديث تلقائي كل دقيقتين لجلب الحجوزات الجديدة
+    setInterval(window.loadBookings, 120000);
+</script>
 </body>
 </html>
