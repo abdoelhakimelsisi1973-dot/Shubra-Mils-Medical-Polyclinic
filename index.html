@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>حجوزات مجمع شبراملس الطبي</title>
+<title>حجز موعد - مجمع شبراملس الطبي</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
 
@@ -35,7 +35,7 @@ body {
     border-top:6px solid var(--primary);
 }
 
-h2 { color:var(--primary); margin-bottom:20px; }
+h2 { color:var(--primary); }
 
 .form-group {
     text-align:right;
@@ -55,12 +55,6 @@ input,select {
     border-radius:12px;
     border:2px solid #ddd;
     font-size:16px;
-    transition:.3s;
-}
-
-input:focus,select:focus {
-    border-color:var(--accent);
-    outline:none;
 }
 
 button {
@@ -79,23 +73,17 @@ button {
     color:#fff;
 }
 
-.submit-btn:hover {
-    opacity:.9;
-}
-
 .cancel-btn {
     background:#eee;
     color:#d32f2f;
 }
 
-#success {
-    display:none;
-}
+#success { display:none; }
 
 .logo {
-    width:120px;
+    width:110px;
     border-radius:50%;
-    margin-bottom:15px;
+    margin-bottom:10px;
 }
 </style>
 </head>
@@ -148,14 +136,15 @@ button {
 </form>
 
 <div id="success">
-<h3>✅ تم الحجز</h3>
+<h3>✅ تم الحجز بنجاح</h3>
 <p id="result"></p>
-<button onclick="location.reload()">حجز جديد</button>
 </div>
 
 </div>
 
 <script>
+
+const scriptURL = "https://script.google.com/macros/s/AKfycbxuoXQs0h0MzQGJ9ap29c12dnI4mn9jxdPhPq89kL6SfgwVWIGj1waZmU-trH9SXIyobA/exec";
 
 const data = {
 "السبت":{"أسنان":["د. رنا","د. خالد"],"مسالك":["د. علي"]},
@@ -198,7 +187,7 @@ doc.add(o);
 });
 }
 
-document.getElementById("form").addEventListener("submit",function(e){
+document.getElementById("form").addEventListener("submit", async function(e){
 e.preventDefault();
 
 let name=document.getElementById("name").value;
@@ -206,15 +195,25 @@ let day=document.getElementById("day").value;
 let spec=document.getElementById("spec").value;
 let doc=document.getElementById("doc").value;
 
-if(!day||!spec||!doc){
+if(!day || !spec || !doc){
 alert("اكمل البيانات");
 return;
 }
 
+await fetch(scriptURL,{
+method:"POST",
+body:new URLSearchParams({
+name:name,
+spec:spec,
+doc:doc
+})
+});
+
 document.getElementById("form").style.display="none";
 document.getElementById("success").style.display="block";
 document.getElementById("result").innerText=
-name+" - "+day+" - "+spec+" - "+doc;
+"تم الحجز باسم: "+name;
+
 });
 
 </script>
