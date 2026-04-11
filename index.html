@@ -61,7 +61,7 @@
             </div>
             <div class="form-group">
                 <label>يوم الحجز:</label>
-                <select id="bDay" required ="updateSpecialties()">
+                <select id="bDay" required>
                     <option value="">اختر اليوم...</option>
                     <option value="السبت">السبت</option>
                     <option value="الأحد">الأحد</option>
@@ -119,121 +119,76 @@
 
 <script>
     // رابط جوجل شيت الخاص بك (CSV للقراءة)
-<script>
-// 1. رابط الـ Web App الخاص بجوجل شيت
-const scriptURL = 'https://script.google.com/macros/s/AKfycbwzVo2w7Jjzjo5icuSgXV4fj6BJGu2gdcVSZBHcss6heWriEXtGt7AMoFJTpnYrfvdC-w/exec';
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbwzVo2w7Jjzjo5icuSgXV4fj6BJGu2gdcVSZBHcss6heWriEXtGt7AMoFJTpnYrfvdC-w/exec';
 
-// 2. بيانات الخدمات والأطباء
-const constantServices = { 
-    "طوارئ 24 ساعة": ["طبيب الطوارئ المناوب"], 
-    "معمل التحاليل": ["د. ثريا القاضي", "د. فريال محمود رزق"] 
-};
+    // بيانات الخدمات والأطباء
+    const constantServices = { 
+        "طوارئ 24 ساعة": ["طبيب الطوارئ المناوب"], 
+        "معمل التحاليل": ["د. ثريا القاضي", "د. فريال محمود رزق"] 
+    };
 
-<script>
-const scriptURL = 'https://script.google.com/macros/s/AKfycbwzVo2w7Jjzjo5icuSgXV4fj6BJGu2gdcVSZBHcss6heWriEXtGt7AMoFJTpnYrfvdC-w/exec';
+    const scheduleData = {
+        "السبت": { "أسنان": ["د. رنا حمودة (04:00 عصراً)", "د. خالد الداهس (09:00 مساءً)"], "مسالك": ["د. علي منتصر (07:00 مساءً)"], "أنف وأذن": ["د. محمد هيكل (07:00 مساءً)"], "عيون": ["أخصائي محمد مجدي سعده (02:00 ظهراً)"] },
+        "الأحد": { "قلب": ["د. أحمد مسعد الغلبان (06:00 مساءً)"], "أسنان": ["د. محمد علاء (03:00 مساءً)", "د. محمود دهب (08:00 مساءً)"], "عيون": ["أخصائي د. خالد الشيخ (05:00 عصراً)"], "عظام": ["أخصائي إبراهيم مطاوع (04:00 عصراً)"] },
+        "الإثنين": { "نساء": ["د. هيام السمراوي (01:00 ظهراً)"], "مخ وأعصاب": ["د. محمد سلام (08:00 مساءً)"], "أسنان": ["د. رنا حمودة", "د. خالد الداهس"], "مسالك": ["د. علي منتصر"] },
+        "الثلاثاء": { "نفسية": ["د. آلاء الحوت (06:00 مساءً)"], "أسنان": ["د. محمد علاء", "د. محمود دهب"], "عظام": ["أخصائي إبراهيم مطاوع"], "عيون": ["أخصائي محمد مجدي سعده"] },
+        "الأربعاء": { "أسنان": ["د. رنا حمودة", "د. خالد الداهس"], "قلب": ["د. أحمد مسعد الغلبان"], "اطفال": ["د. جينا عبدالله الشافعي (06:00 مساءً)"] },
+        "الخميس": { "قلب": ["د. أحمد مسعد الغلبان"], "أنف وأذن": ["د. محمد هيكل"], "عظام": ["أخصائي إبراهيم مطاوع"], "عيون": ["أخصائي محمد مجدي سعده"] },
+        "الجمعة": { "باطنة ومناظير": ["د. عزيز بدير (02:00 ظهراً)"] }
+    };
 
-const constantServices = { 
-    "طوارئ 24 ساعة": ["طبيب الطوارئ المناوب"], 
-    "معمل التحاليل": ["د. ثريا القاضي", "د. فريال محمود رزق"] 
-};
+    document.addEventListener('DOMContentLoaded', function() {
+        const daySelect = document.getElementById('bDay');
+        const specSelect = document.getElementById('specialty');
+        const docSelect = document.getElementById('doctorName');
 
-<script>
-// رابط جوجل شيت
-const scriptURL = 'https://script.google.com/macros/s/AKfycbwzVo2w7Jjzjo5icuSgXV4fj6BJGu2gdcVSZBHcss6heWriEXtGt7AMoFJTpnYrfvdC-w/exec';
-
-const constantServices = { 
-    "طوارئ 24 ساعة": ["طبيب الطوارئ المناوب"], 
-    "معمل التحاليل": ["د. ثريا القاضي", "د. فريال محمود رزق"] 
-};
-
-<!DOCTYPE html>
-<html lang="ar">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نموذج حجز العيادة</title>
-</head>
-<body>
-    <form id="booking-form">
-        <label for="bDay">اختر اليوم:</label>
-        <select id="bDay">
-            <option value="">اختر اليوم...</option>
-            <option value="السبت">السبت</option>
-            <option value="الأحد">الأحد</option>
-            <option value="الإثنين">الإثنين</option>
-            <option value="الثلاثاء">الثلاثاء</option>
-            <option value="الأربعاء">الأربعاء</option>
-            <option value="الخميس">الخميس</option>
-            <option value="الجمعة">الجمعة</option>
-        </select>
-
-        <label for="specialty">اختر العيادة:</label>
-        <select id="specialty">
-            <option value="">اختر العيادة...</option>
-        </select>
-
-        <label for="doctorName">اختر الطبيب:</label>
-        <select id="doctorName">
-            <option value="">يرجى اختيار العيادة أولاً...</option>
-        </select>
-
-        <button type="submit">احجز الآن</button>
-    </form>
-
-    <script>
-        const scheduleData = {
-            "السبت": { "أسنان": ["د. رنا حمودة (04:00 عصراً)", "د. خالد الداهس (09:00 مساءً)"], "مسالك": ["د. علي منتصر (07:00 مساءً)"], "أنف وأذن": ["د. محمد هيكل (07:00 مساءً)"], "عيون": ["أخصائي محمد مجدي سعده (02:00 ظهراً)"] },
-            "الأحد": { "قلب": ["د. أحمد مسعد الغلبان (06:00 مساءً)"], "أسنان": ["د. محمد علاء (03:00 مساءً)", "د. محمود دهب (08:00 مساءً)"], "عيون": ["أخصائي د. خالد الشيخ (05:00 عصراً)"], "عظام": ["أخصائي إبراهيم مطاوع (04:00 عصراً)"] },
-            "الإثنين": { "نساء": ["د. هيام السمراوي (01:00 ظهراً)"], "مخ وأعصاب": ["د. محمد سلام (08:00 مساءً)"], "أسنان": ["د. رنا حمودة", "د. خالد الداهس"], "مسالك": ["د. علي منتصر"] },
-            "الثلاثاء": { "نفسية": ["د. آلاء الحوت (06:00 مساءً)"], "أسنان": ["د. محمد علاء", "د. محمود دهب"], "عظام": ["أخصائي إبراهيم مطاوع"], "عيون": ["أخصائي محمد مجدي سعده"] },
-            "الأربعاء": { "أسنان": ["د. رنا حمودة", "د. خالد الداهس"], "قلب": ["د. أحمد مسعد الغلبان"], "اطفال": ["د. جينا عبدالله الشافعي (06:00 مساءً)"] },
-            "الخميس": { "قلب": ["د. أحمد مسعد الغلبان"], "أنف وأذن": ["د. محمد هيكل"], "عظام": ["أخصائي إبراهيم مطاوع"], "عيون": ["أخصائي محمد مجدي سعده"] },
-            "الجمعة": { "باطنة ومناظير": ["د. عزيز بدير (02:00 ظهراً)"] }
-        };
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const daySelect = document.getElementById('bDay');
-            const specSelect = document.getElementById('specialty');
-            const docSelect = document.getElementById('doctorName');
-
-            // تحديث العيادات عند تغيير اليوم
-            daySelect.addEventListener('change', function() {
-                const day = this.value;
-                specSelect.innerHTML = '<option value="">اختر العيادة...</option>';
-                docSelect.innerHTML = '<option value="">يرجى اختيار العيادة أولاً...</option>';
-                
-                if(day) {
-                    Object.keys(scheduleData[day]).forEach(s => specSelect.add(new Option(s, s)));
-                }
-            });
-
-            // تحديث الأطباء عند تغيير العيادة
-            specSelect.addEventListener('change', function() {
-                const day = daySelect.value;
-                const spec = this.value;
-                docSelect.innerHTML = '<option value="">اختر الطبيب...</option>';
-                
-                let list = scheduleData[day] ? scheduleData[day][spec] : null;
-                if(list) {
-                    list.forEach(d => docSelect.add(new Option(d, d)));
-                }
-            });
-
-            // كود الإرسال للجوجل شيت
-            const form = document.getElementById('booking-form');
-            form.addEventListener('submit', e => {
-                e.preventDefault();
-                // هنا يمكنك إضافة كود الإرسال إلى Google Sheets
-                alert('تم إرسال الطلب بنجاح!');
-            });
+        // تحديث العيادات عند تغيير اليوم
+        daySelect.addEventListener('change', function() {
+            const day = this.value;
+            specSelect.innerHTML = '<option value="">اختر العيادة...</option>';
+            docSelect.innerHTML = '<option value="">يرجى اختيار العيادة أولاً...</option>';
+            
+            if(day) {
+                Object.keys(scheduleData[day]).forEach(s => specSelect.add(new Option(s, s)));
+            }
         });
-    </script>
-</body>
-</html>
 
-</script>
-</script>
-</script> });
+        // تحديث الأطباء عند تغيير العيادة
+        specSelect.addEventListener('change', function() {
+            const day = daySelect.value;
+            const spec = this.value;
+            docSelect.innerHTML = '<option value="">اختر الطبيب...</option>';
+            
+            let list = scheduleData[day] ? scheduleData[day][spec] : null;
+            if(list) {
+                list.forEach(d => docSelect.add(new Option(d, d)));
+            }
+        });
+
+        // كود الإرسال للجوجل شيت
+        const form = document.getElementById('booking-form');
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            const patientName = document.getElementById('pName').value;
+            const selectedDay = daySelect.value;
+            const selectedSpecialty = specSelect.value;
+            const selectedDoctor = docSelect.value;
+
+            // هنا يمكنك إضافة كود الإرسال إلى Google Sheets
+            alert('تم إرسال الطلب بنجاح!');
+
+            // عرض رسالة النجاح
+            document.getElementById('res-name').textContent = patientName;
+            document.getElementById('b-num').textContent = Math.floor(Math.random() * 100); // رقم عشوائي للدور
+            document.getElementById('success-msg').style.display = 'block';
+            form.reset(); // إعادة تعيين النموذج
+        });
+    });
+
+    function resetKimoForm() {
+        document.getElementById('booking-form').reset();
+        document.getElementById('success-msg').style.display = 'none';
+    }
 </script>
 </body>
 </html>
