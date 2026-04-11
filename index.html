@@ -51,32 +51,16 @@
 <div class="main-wrapper">
     <div class="side-panel">
         <h3 style="color: #0097a7; border-bottom: 2px solid #00bcd4; text-align: center;">خدمات المجمع ✨</h3>
-        <ul style="list-style:none; padding:0; line-height:2.2; text-align: right; font-size: 14px;">
-            <li>🚑 الطوارئ متوفرة 24 ساعة يومياً</li>
-            <li>🧪 المعمل متوفر 24 ساعة لخدمتك</li>
-            <li>✅ نخبة من الأطباء المتخصصين</li>
-            <li>✅ أحدث الأجهزة الطبية</li>
-            <li>✅ رعاية متكاملة طوال الأسبوع</li>
+        <ul style="list-style:none; padding:0; line-height:2.4; text-align: right; font-size: 14px;">
+            <li style="margin-bottom: 8px;">🚑 الطوارئ متوفرة 24 ساعة يومياً</li>
+            <li style="margin-bottom: 8px;">🧪 المعمل متوفر 24 ساعة لخدمتك</li>
+            <li style="margin-bottom: 8px;">✅ نخبة من الأطباء المتخصصين</li>
+            <li style="margin-bottom: 8px;">✅ أحدث الأجهزة الطبية</li>
+            <li style="margin-bottom: 8px;">✅ رعاية متكاملة طوال الأسبوع</li>
         </ul>
     </div>
 
-    <div class="container"> 
-        </div>
-
-    <div class="side-panel">
-        <h3 style="color: #0097a7; border-bottom: 2px solid #00bcd4; text-align: center;">تواصل معنا 📍</h3>
-        <div style="text-align: right; line-height: 1.8; font-size: 13px;">
-            <p style="margin-bottom: 10px;"><strong>📍 العنوان:</strong><br>
-            شبراملس – امتداد شارع السوق - أعلى مسجد عباد الرحمن</p>
-            
-            <p style="margin-bottom: 5px;"><strong>للحجز والاستفسار:</strong></p>
-            💬 واتساب: 01020580002<br>
-            📲 موبايل: 01122593433<br>
-            📞 أرضي: 0404650337<br>
-            📞 أرضي: 0404658010
-        </div>
-
-        <div class="container">
+    <div class="container">
         <img src="logo.png" alt="Logo" class="main-logo">
         <h2>
             مجمع شبراملس الطبي<br>
@@ -113,6 +97,39 @@
             </div>
             <div id="loader">جاري تسجيل حجزك في المنصة الذكية... ⏳</div>
         </form>
+
+        <div id="success-msg">
+            <h3 style="color:var(--success-color); margin-top:0;">✅ تم الحجز بنجاح</h3>
+            <p>المريض: <b id="res-name"></b></p>
+            <div style="background: #e0f2f1; padding: 15px; border-radius: 15px; margin: 15px 0; border: 2px dashed var(--primary-color);">
+                <p style="margin:0; color:var(--primary-color); font-weight:bold;">رقم الدور الخاص بك:</p>
+                <b id="b-num" style="font-size:65px; color:var(--primary-color);">0</b>
+                <p style="margin: 10px 0 0; color: #d32f2f; font-size: 14px; font-weight: bold;">
+                    سيتم إلغاء الحجز حين انتهاء وقت العيادة
+                </p>
+            </div>
+            <p style="font-size: 14px; color: #666;">⚠️ يرجى تصوير الشاشة وإظهارها لموظف الاستقبال</p>
+            <button onclick="location.reload()" class="submit-btn" style="width:100%; background: var(--primary-color);">حجز مريض جديد</button>
+        </div>
+    </div>
+
+    <div class="side-panel">
+        <h3 style="color: #0097a7; border-bottom: 2px solid #00bcd4; text-align: center;">تواصل معنا 📍</h3>
+        <div style="text-align: right; line-height: 1.8; font-size: 13px;">
+            <p style="margin-bottom: 12px; border-bottom: 1px solid #eee; padding-bottom: 5px;">
+                <strong>📍 العنوان:</strong><br>
+                شبراملس – امتداد شارع السوق - أعلى مسجد عباد الرحمن
+            </p>
+            <p style="margin-bottom: 8px; font-weight: bold; color: #0097a7;">للحجز والاستفسار:</p>
+            <div style="background: #f9f9f9; padding: 10px; border-radius: 10px;">
+                💬 واتساب: 01020580002<br>
+                📲 موبايل: 01122593433<br>
+                📞 أرضي: 0404650337<br>
+                📞 أرضي: 0404658010
+            </div>
+        </div>
+    </div>
+</div>  </form>
 
      <div id="success-msg">
         <h3 style="color:var(--success-color); margin-top:0;">✅ تم الحجز بنجاح</h3>
