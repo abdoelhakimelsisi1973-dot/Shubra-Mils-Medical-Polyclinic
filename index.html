@@ -268,91 +268,110 @@
     </div>
 </div>
 
-<script>
-const constantServices = { 
-    "طوارئ 24 ساعة": ["طبيب الطوارئ المناوب"], 
-    "معمل التحاليل": ["د. ثريا القاضي", "د. فريال محمود رزق"] 
-};
+<script><script type="module">
+    // 1. استدعاء مكتبات فايربيس
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, serverTimestamp, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-const scheduleData = {
-    "السبت": { "أسنان": ["د. رنا حمودة (04:00 عصراً)", "د. خالد الداهس (09:00 مساءً)"], "مسالك": ["د. علي منتصر (07:00 مساءً)"], "أنف وأذن": ["د. محمد هيكل (07:00 مساءً)"], "عيون": ["أخصائي محمد مجدي سعده (02:00 ظهراً)"] },
-    "الأحد": { "قلب": ["د. أحمد مسعد الغلبان (06:00 مساءً)"], "أسنان": ["د. محمد علاء (03:00 مساءً)", "د. محمود دهب (08:00 مساءً)"], "عيون": ["أخصائي د. خالد الشيخ (05:00 عصراً)"], "عظام": ["أخصائي إبراهيم مطاوع (04:00 عصراً)"] },
-    "الإثنين": { "نساء": ["د. هيام السمراوي (01:00 ظهراً)"], "مخ وأعصاب": ["د. محمد سلام (08:00 مساءً)"], "أسنان": ["د. رنا حمودة", "د. خالد الداهس"], "مسالك": ["د. علي منتصر"] },
-    "الثلاثاء": { "نفسية": ["د. آلاء الحوت (06:00 مساءً)"], "أسنان": ["د. محمد علاء", "د. محمود دهب"], "عظام": ["أخصائي إبراهيم مطاوع"], "عيون": ["أخصائي محمد مجدي سعده"] },
-    "الأربعاء": { "أسنان": ["د. رنا حمودة", "د. خالد الداهس"], "قلب": ["د. أحمد مسعد الغلبان"], "اطفال": ["د. جينا عبدالله الشافعي (06:00 مساءً)"] },
-    "الخميس": { "قلب": ["د. أحمد مسعد الغلبان"], "أنف وأذن": ["د. محمد هيكل"], "عظام": ["أخصائي إبراهيم مطاوع"], "عيون": ["أخصائي محمد مجدي سعده"] },
-    "الجمعة": { "باطنة ومناظير": ["د. عزيز بدير (02:00 ظهراً)"] }
-};
+    // 2. إعدادات مشروعك (تأكد أنها نفس الإعدادات في لوحة تحكم فايربيس الخاصة بك)
+    const firebaseConfig = {
+        apiKey: "AIzaSyCghSGMQpRKBBWEvPsv50S0--bLr8mLTc",
+        authDomain: "shubra-mils-clinic.firebaseapp.com",
+        projectId: "shubra-mils-clinic",
+        storageBucket: "shubra-mils-clinic.firebasestorage.app",
+        messagingSenderId: "458397109437",
+        appId: "1:458397109437:web:f8987863f32e1dbdbc3bd4"
+    };
 
-function updateSpecialties() {
-    const day = document.getElementById('bDay').value;
-    const specSelect = document.getElementById('specialty');
-    specSelect.innerHTML = '<option value="">اختر العيادة...</option>';
-    if(day) {
-        Object.keys(constantServices).forEach(s => specSelect.add(new Option(s, s)));
-        if(scheduleData[day]) Object.keys(scheduleData[day]).forEach(s => specSelect.add(new Option(s, s)));
-    }
-}
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-function updateDoctors() {
-    const day = document.getElementById('bDay').value;
-    const spec = document.getElementById('specialty').value;
-    const docSelect = document.getElementById('doctorName');
-    docSelect.innerHTML = '<option value="">اختر الطبيب...</option>';
-    let list = constantServices[spec] || (scheduleData[day] ? scheduleData[day][spec] : null);
-    if(list) list.forEach(d => docSelect.add(new Option(d, d)));
-}
+    // 3. بيانات المواعيد (كما هي)
+    const constantServices = { 
+        "طوارئ 24 ساعة": ["طبيب الطوارئ المناوب"], 
+        "معمل التحاليل": ["د. ثريا القاضي", "د. فريال محمود رزق"] 
+    };
 
-function resetKimoForm() {
-    if(confirm("هل تريد بالتأكيد مسح كافة البيانات المدخلة؟")) {
-        document.getElementById('booking-form').reset();
-        document.getElementById('specialty').innerHTML = '<option value="">يرجى اختيار اليوم أولاً...</option>';
-        document.getElementById('doctorName').innerHTML = '<option value="">يرجى اختيار العيادة أولاً...</option>';
-    }
-}
+    const scheduleData = {
+        "السبت": { "أسنان": ["د. رنا حمودة (04:00 عصراً)", "د. خالد الداهس (09:00 مساءً)"], "مسالك": ["د. علي منتصر (07:00 مساءً)"], "أنف وأذن": ["د. محمد هيكل (07:00 مساءً)"], "عيون": ["أخصائي محمد مجدي سعده (02:00 ظهراً)"] },
+        "الأحد": { "قلب": ["د. أحمد مسعد الغلبان (06:00 مساءً)"], "أسنان": ["د. محمد علاء (03:00 مساءً)", "د. محمود دهب (08:00 مساءً)"], "عيون": ["أخصائي د. خالد الشيخ (05:00 عصراً)"], "عظام": ["أخصائي إبراهيم مطاوع (04:00 عصراً)"] },
+        "الإثنين": { "نساء": ["د. هيام السمراوي (01:00 ظهراً)"], "مخ وأعصاب": ["د. محمد سلام (08:00 مساءً)"], "أسنان": ["د. رنا حمودة", "د. خالد الداهس"], "مسالك": ["د. علي منتصر"] },
+        "الثلاثاء": { "نفسية": ["د. آلاء الحوت (06:00 مساءً)"], "أسنان": ["د. محمد علاء", "د. محمود دهب"], "عظام": ["أخصائي إبراهيم مطاوع"], "عيون": ["أخصائي محمد مجدي سعده"] },
+        "الأربعاء": { "أسنان": ["د. رنا حمودة", "د. خالد الداهس"], "قلب": ["د. أحمد مسعد الغلبان"], "اطفال": ["د. جينا عبدالله الشافعي (06:00 مساءً)"] },
+        "الخميس": { "قلب": ["د. أحمد مسعد الغلبان"], "أنف وأذن": ["د. محمد هيكل"], "عظام": ["أخصائي إبراهيم مطاوع"], "عيون": ["أخصائي محمد مجدي سعده"] },
+        "الجمعة": { "باطنة ومناظير": ["د. عزيز بدير (02:00 ظهراً)"] }
+    };
 
-const scriptURL = 'https://script.google.com/macros/s/AKfycbwzVo2w7Jjzjo5icuSgXV4fj6BJGu2gdcVSZBHcss6heWriEXtGt7AMoFJTpnYrfvdC-w/exec';
-const form = document.getElementById('booking-form');
-
-form.addEventListener('submit', e => {
-    e.preventDefault();
-    document.getElementById('btn').style.display = 'none';
-    document.getElementById('loader').style.display = 'block';
-
-    const pName = document.getElementById('pName').value;
-    const bDay = document.getElementById('bDay').value;
-    const doctor = document.getElementById('doctorName').value;
-    const spec = document.getElementById('specialty').value;
-
-    fetch(scriptURL, { method: 'POST', body: new FormData(form)})
-    .then(() => {
-        document.getElementById('loader').style.display = 'none';
-        form.style.display = 'none';
-        
-        const todayStr = new Date().toLocaleDateString();
-        let dailyCounts = {};
-        
-        if (localStorage.getItem('bDate') === todayStr) {
-            let stored = localStorage.getItem('dailyCounts');
-            if (stored) dailyCounts = JSON.parse(stored);
-        } else {
-            localStorage.setItem('bDate', todayStr);
+    // 4. وظائف التحديث (جعلناها global لتصل إليها الـ HTML)
+    window.updateSpecialties = function() {
+        const day = document.getElementById('bDay').value;
+        const specSelect = document.getElementById('specialty');
+        specSelect.innerHTML = '<option value="">اختر العيادة...</option>';
+        if(day) {
+            Object.keys(constantServices).forEach(s => specSelect.add(new Option(s, s)));
+            if(scheduleData[day]) Object.keys(scheduleData[day]).forEach(s => specSelect.add(new Option(s, s)));
         }
+    }
+
+    window.updateDoctors = function() {
+        const day = document.getElementById('bDay').value;
+        const spec = document.getElementById('specialty').value;
+        const docSelect = document.getElementById('doctorName');
+        docSelect.innerHTML = '<option value="">اختر الطبيب...</option>';
+        let list = constantServices[spec] || (scheduleData[day] ? scheduleData[day][spec] : null);
+        if(list) list.forEach(d => docSelect.add(new Option(d, d)));
+    }
+
+    // 5. وظيفة الإرسال للفايربيس
+    const form = document.getElementById('booking-form');
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('btn');
+        const loader = document.getElementById('loader');
         
-        let count = (dailyCounts[spec] || 0) + 1;
-        dailyCounts[spec] = count;
-        localStorage.setItem('dailyCounts', JSON.stringify(dailyCounts));
+        btn.style.display = 'none';
+        loader.style.display = 'block';
 
-        document.getElementById('res-name').innerText = pName;
-        document.getElementById('res-day').innerText = bDay;
-        document.getElementById('res-doc').innerText = doctor;
-        document.getElementById('b-num').innerText = count;
-        document.getElementById('success-msg').style.display = 'block';
+        try {
+            const pName = document.getElementById('pName').value;
+            const bDay = document.getElementById('bDay').value;
+            const spec = document.getElementById('specialty').value;
+            const doctor = document.getElementById('doctorName').value;
 
+            // حساب رقم الدور بناءً على العيادة واليوم في الفايربيس
+            const q = query(collection(db, "bookings"), 
+                        where("bookingDay", "==", bDay), 
+                        where("specialty", "==", spec));
+            const snap = await getDocs(q);
+            const count = snap.size + 1;
 
-    })
-    .catch(() => { alert('حدث خطأ! يرجى المحاولة مرة أخرى.'); document.getElementById('btn').style.display = 'block'; });
-});
+            // حفظ البيانات في الفايربيس
+            await addDoc(collection(db, "bookings"), {
+                patientName: pName,
+                bookingDay: bDay,
+                specialty: spec,
+                doctorName: doctor,
+                orderNumber: count,
+                timestamp: serverTimestamp()
+            });
+
+            // إظهار رسالة النجاح
+            loader.style.display = 'none';
+            form.style.display = 'none';
+            document.getElementById('res-name').innerText = pName;
+            document.getElementById('res-day').innerText = bDay;
+            document.getElementById('res-doc').innerText = doctor;
+            document.getElementById('b-num').innerText = count;
+            document.getElementById('success-msg').style.display = 'block';
+
+        } catch (error) {
+            console.error(error);
+            alert("حدث خطأ أثناء تسجيل الحجز، يرجى المحاولة لاحقاً.");
+            btn.style.display = 'block';
+            loader.style.display = 'none';
+        }
+    });
+</script>});
 </script>
 </body>
 </html>
