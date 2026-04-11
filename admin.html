@@ -161,51 +161,76 @@
         loadBookings(day, "الكل");
     }
 
-    async function loadBookings(day = "الكل", clinic = "الكل") {
+async function loadBookings(day = "الكل", clinic = "الكل") {
         const tbody = document.getElementById('tableBody');
         const loader = document.getElementById('loader');
         const ticker = document.getElementById('latest-booking');
         const viewTitle = document.getElementById('current-view-title');
 
-        viewTitle.innerText = `عرض: ${day} - ${clinic}`;
+        viewTitle.innerText = `عرض: ${day === "الكل" ? "كل الأيام" : day} | ${clinic === "الكل" ? "كل العيادات" : clinic}`;
         tbody.innerHTML = "";
         loader.style.display = "block";
 
         try {
             const response = await fetch(SHEET_URL);
             const data = await response.text();
-            const rows = data.split('\n').slice(1);
+            const rows = data.split('\n').slice(1); // تخطي سطر العنوان
             loader.style.display = "none";
 
+            // تحديث شريط الأخبار بآخر حجز مسجل (دائماً آخر صف في الشيت)
             if (rows.length > 0) {
-                const lastRow = rows[rows.length - 1].split(',');
-                ticker.innerHTML = `⚠️ آخر حجز: ${lastRow[1]} - ${lastRow[2]} (دور: ${lastRow[4] || '-'})`;
+                const lastRow = rows[rows.length - 1].split(',').map(c => c.trim().replace(/"/g, ''));
+                if(lastRow.length > 1) {
+                    ticker.innerHTML = `⚠️ آخر حجز: ${lastRow[1]} - عيادة ${lastRow[2]} (دور: ${lastRow[4] || '-'})`;
+                }
             }
 
             let found = false;
-            rows.reverse().forEach(row => {
-                const cols = row.split(',').map(c => c.trim());
+            
+            // تم حذف .reverse() ليعرض المريض رقم 1 في البداية ثم 2 وهكذا
+            rows.forEach(row => {
+                const cols = row.split(',').map(c => c.trim().replace(/"/g, ''));
                 if (cols.length < 2) return;
 
-                const timestamp = cols[0], patient = cols[1], specialty = cols[2], doctor = cols[3] || '-', orderNum = cols[4] || '-';
+                // ترتيب الأعمدة: [0]وقت | [1]اسم | [2]عيادة | [3]طبيب | [4]رقم الدور | [5]اليوم
+                const timestamp = cols[0];
+                const patient = cols[1];
+                const specialty = cols[2];
+                const doctor = cols[3] || '-';
+                const orderNum = cols[4] || '-';
+                const rowDayFromSheet = cols[5] || ""; // القراءة من عمود اليوم المخصص
 
-                let rowDay = "";
-                if (timestamp) {
+                // تحديد اليوم برمجياً كاحتياط إذا لم يوجد عمود لليوم
+                let calculatedDay = "";
+                if (timestamp && timestamp.includes('/')) {
                     const p = timestamp.split(' ')[0].split('/');
-                    rowDay = ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"][new Date(p[2], p[0]-1, p[1]).getDay()];
+                    calculatedDay = ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"][new Date(p[2], p[0]-1, p[1]).getDay()];
                 }
+                
+                // الأولوية لليوم المكتوب في الشيت، وإذا لم يوجد نستخدم المحسوب من التاريخ
+                const finalRowDay = rowDayFromSheet || calculatedDay;
 
-                const matchDay = (day === "الكل" || rowDay === day);
+                const matchDay = (day === "الكل" || finalRowDay === day);
                 const matchClinic = (clinic === "الكل" || specialty.includes(clinic));
 
                 if (matchDay && matchClinic) {
                     found = true;
-                    tbody.innerHTML += `<tr><td><b>${orderNum}</b></td><td>${patient}</td><td>${specialty}</td><td>${doctor}</td><td>${timestamp.split(' ')[1] || '--'}</td></tr>`;
+                    tbody.innerHTML += `
+                        <tr>
+                            <td style="font-weight:bold; color:var(--primary-color);">${orderNum}</td>
+                            <td>${patient}</td>
+                            <td>${specialty}</td>
+                            <td>${doctor}</td>
+                            <td style="direction:ltr;">${timestamp.split(' ')[1] || '--'}</td>
+                        </tr>`;
                 }
             });
 
-            if (!found) tbody.innerHTML = "<tr><td colspan='5' style='text-align:center'>لا توجد حجوزات مطابقة</td></tr>";
-        } catch (e) { loader.innerText = "خطأ في جلب البيانات"; }
+            if (!found) tbody.innerHTML = "<tr><td colspan='5' style='text-align:center'>لا توجد حجوزات مطابقة لهذا اليوم أو العيادة</td></tr>";
+        } catch (e) { 
+            loader.innerText = "خطأ في جلب البيانات من جوجل شيت"; 
+            console.error(e);
+        }
     }
 
     window.saveAsImage = function() {
