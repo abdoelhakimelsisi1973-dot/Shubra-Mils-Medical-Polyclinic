@@ -118,8 +118,8 @@
 </div>
 
 <script>
-    // رابط جوجل شيت الخاص بك (CSV للقراءة)
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbwzVo2w7Jjzjo5icuSgXV4fj6BJGu2gdcVSZBHcss6heWriEXtGt7AMoFJTpnYrfvdC-w/exec';
+    // رابط جوجل شيت الخاص بك (API)
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbxuoXQs0h0MzQGJ9ap29c12dnI4mn9jxdPhPq89kL6SfgwVWIGj1waZmU-trH9SXIyobA/exec';
 
     // بيانات الخدمات والأطباء
     const constantServices = { 
@@ -174,14 +174,19 @@
             const selectedSpecialty = specSelect.value;
             const selectedDoctor = docSelect.value;
 
-            // هنا يمكنك إضافة كود الإرسال إلى Google Sheets
-            alert('تم إرسال الطلب بنجاح!');
-
-            // عرض رسالة النجاح
-            document.getElementById('res-name').textContent = patientName;
-            document.getElementById('b-num').textContent = Math.floor(Math.random() * 100); // رقم عشوائي للدور
-            document.getElementById('success-msg').style.display = 'block';
-            form.reset(); // إعادة تعيين النموذج
+            // إرسال البيانات إلى Google Sheets
+            fetch(scriptURL, {
+                method: 'POST',
+                body: JSON.stringify({ name: patientName, day: selectedDay, specialty: selectedSpecialty, doctor: selectedDoctor }),
+                headers: { 'Content-Type': 'application/json' }
+            })
+            .then(response => response.json())
+            .then(data => {
+                // عرض رقم الحجز في صفحة جديدة
+                const bookingNumber = data.bookingNumber; // تأكد من أن هذا هو الاسم الصحيح للرقم في استجابة جوجل شيت
+                window.open(`booking-confirmation.html?bookingNumber=${bookingNumber}`, '_blank');
+            })
+            .catch(error => console.error('Error!', error.message));
         });
     });
 
