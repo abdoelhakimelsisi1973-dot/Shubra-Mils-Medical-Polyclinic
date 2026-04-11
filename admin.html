@@ -174,10 +174,10 @@ async function loadBookings(day = "الكل", clinic = "الكل") {
         try {
             const response = await fetch(SHEET_URL);
             const data = await response.text();
-            const rows = data.split('\n').slice(1); // تخطي سطر العنوان
+            const rows = data.split('\n').slice(1); 
             loader.style.display = "none";
 
-            // تحديث شريط الأخبار بآخر حجز مسجل (دائماً آخر صف في الشيت)
+            // تحديث شريط الأخبار بآخر حجز مسجل في النظام ككل
             if (rows.length > 0) {
                 const lastRow = rows[rows.length - 1].split(',').map(c => c.trim().replace(/"/g, ''));
                 if(lastRow.length > 1) {
@@ -186,47 +186,46 @@ async function loadBookings(day = "الكل", clinic = "الكل") {
             }
 
             let found = false;
-            
-            // تم حذف .reverse() ليعرض المريض رقم 1 في البداية ثم 2 وهكذا
+            let displayCounter = 1; // عداد التسلسل الجديد (1, 2, 3...)
+
             rows.forEach(row => {
                 const cols = row.split(',').map(c => c.trim().replace(/"/g, ''));
                 if (cols.length < 2) return;
 
-                // ترتيب الأعمدة: [0]وقت | [1]اسم | [2]عيادة | [3]طبيب | [4]رقم الدور | [5]اليوم
                 const timestamp = cols[0];
                 const patient = cols[1];
                 const specialty = cols[2];
                 const doctor = cols[3] || '-';
-                const orderNum = cols[4] || '-';
-                const rowDayFromSheet = cols[5] || ""; // القراءة من عمود اليوم المخصص
+                const rowDayFromSheet = cols[5] || ""; 
 
-                // تحديد اليوم برمجياً كاحتياط إذا لم يوجد عمود لليوم
+                // حساب اليوم برمجياً إذا لم يكن مسجلاً في عمود منفصل
                 let calculatedDay = "";
                 if (timestamp && timestamp.includes('/')) {
                     const p = timestamp.split(' ')[0].split('/');
                     calculatedDay = ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"][new Date(p[2], p[0]-1, p[1]).getDay()];
                 }
-                
-                // الأولوية لليوم المكتوب في الشيت، وإذا لم يوجد نستخدم المحسوب من التاريخ
                 const finalRowDay = rowDayFromSheet || calculatedDay;
 
                 const matchDay = (day === "الكل" || finalRowDay === day);
                 const matchClinic = (clinic === "الكل" || specialty.includes(clinic));
 
+                // إذا تحقق الشرط (اليوم + العيادة)
                 if (matchDay && matchClinic) {
                     found = true;
                     tbody.innerHTML += `
                         <tr>
-                            <td style="font-weight:bold; color:var(--primary-color);">${orderNum}</td>
+                            <td style="font-weight:bold; color:var(--primary-color); text-align:center;">${displayCounter}</td> 
                             <td>${patient}</td>
                             <td>${specialty}</td>
                             <td>${doctor}</td>
                             <td style="direction:ltr;">${timestamp.split(' ')[1] || '--'}</td>
                         </tr>`;
+                    
+                    displayCounter++; // نزيد العداد فقط للمرضى الظاهرين في هذه العيادة
                 }
             });
 
-            if (!found) tbody.innerHTML = "<tr><td colspan='5' style='text-align:center'>لا توجد حجوزات مطابقة لهذا اليوم أو العيادة</td></tr>";
+            if (!found) tbody.innerHTML = "<tr><td colspan='5' style='text-align:center'>لا توجد حجوزات مطابقة</td></tr>";
         } catch (e) { 
             loader.innerText = "خطأ في جلب البيانات من جوجل شيت"; 
             console.error(e);
