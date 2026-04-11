@@ -61,7 +61,7 @@
             </div>
             <div class="form-group">
                 <label>يوم الحجز:</label>
-                <select id="bDay" required onchange="updateSpecialties()">
+                <select id="bDay" required ="updateSpecialties()">
                     <option value="">اختر اليوم...</option>
                     <option value="السبت">السبت</option>
                     <option value="الأحد">الأحد</option>
@@ -137,6 +137,15 @@ const constantServices = {
     "معمل التحاليل": ["د. ثريا القاضي", "د. فريال محمود رزق"] 
 };
 
+<script>
+// رابط جوجل شيت
+const scriptURL = 'https://script.google.com/macros/s/AKfycbwzVo2w7Jjzjo5icuSgXV4fj6BJGu2gdcVSZBHcss6heWriEXtGt7AMoFJTpnYrfvdC-w/exec';
+
+const constantServices = { 
+    "طوارئ 24 ساعة": ["طبيب الطوارئ المناوب"], 
+    "معمل التحاليل": ["د. ثريا القاضي", "د. فريال محمود رزق"] 
+};
+
 const scheduleData = {
     "السبت": { "أسنان": ["د. رنا حمودة (04:00 عصراً)", "د. خالد الداهس (09:00 مساءً)"], "مسالك": ["د. علي منتصر (07:00 مساءً)"], "أنف وأذن": ["د. محمد هيكل (07:00 مساءً)"], "عيون": ["أخصائي محمد مجدي سعده (02:00 ظهراً)"] },
     "الأحد": { "قلب": ["د. أحمد مسعد الغلبان (06:00 مساءً)"], "أسنان": ["د. محمد علاء (03:00 مساءً)", "د. محمود دهب (08:00 مساءً)"], "عيون": ["أخصائي د. خالد الشيخ (05:00 عصراً)"], "عظام": ["أخصائي إبراهيم مطاوع (04:00 عصراً)"] },
@@ -147,75 +156,77 @@ const scheduleData = {
     "الجمعة": { "باطنة ومناظير": ["د. عزيز بدير (02:00 ظهراً)"] }
 };
 
-// تعريف الدوال بشكل عام (Global) لتراها القوائم في HTML
-window.updateSpecialties = function() {
-    const day = document.getElementById('bDay').value;
+// انتظر حتى يتم تحميل الصفحة بالكامل
+document.addEventListener('DOMContentLoaded', function() {
+    const daySelect = document.getElementById('bDay');
     const specSelect = document.getElementById('specialty');
     const docSelect = document.getElementById('doctorName');
-    
-    specSelect.innerHTML = '<option value="">اختر العيادة...</option>';
-    docSelect.innerHTML = '<option value="">يرجى اختيار العيادة أولاً...</option>';
-    
-    if(day) {
-        // إضافة الخدمات الثابتة
-        Object.keys(constantServices).forEach(s => specSelect.add(new Option(s, s)));
-        // إضافة العيادات الخاصة باليوم
-        if(scheduleData[day]) {
-            Object.keys(scheduleData[day]).forEach(s => specSelect.add(new Option(s, s)));
-        }
-    }
-};
 
-window.updateDoctors = function() {
-    const day = document.getElementById('bDay').value;
-    const spec = document.getElementById('specialty').value;
-    const docSelect = document.getElementById('doctorName');
-    
-    docSelect.innerHTML = '<option value="">اختر الطبيب...</option>';
-    
-    let list = constantServices[spec] || (scheduleData[day] ? scheduleData[day][spec] : null);
-    if(list) {
-        list.forEach(d => docSelect.add(new Option(d, d)));
-    }
-};
-
-// كود الإرسال لجوجل شيت
-const form = document.getElementById('booking-form');
-form.addEventListener('submit', e => {
-    e.preventDefault();
-    document.getElementById('btn').style.display = 'none';
-    document.getElementById('loader').style.display = 'block';
-
-    fetch(scriptURL, { method: 'POST', body: new FormData(form)})
-    .then(res => {
-        document.getElementById('loader').style.display = 'none';
-        form.style.display = 'none';
+    // تحديث العيادات عند تغيير اليوم
+    daySelect.addEventListener('change', function() {
+        const day = this.value;
+        specSelect.innerHTML = '<option value="">اختر العيادة...</option>';
+        docSelect.innerHTML = '<option value="">يرجى اختيار العيادة أولاً...</option>';
         
-        // حساب رقم الدور (محلياً)
-        const spec = document.getElementById('specialty').value;
-        const todayStr = new Date().toLocaleDateString();
-        let dailyCounts = JSON.parse(localStorage.getItem('dailyCounts') || '{}');
-        if (localStorage.getItem('bDate') !== todayStr) {
-            dailyCounts = {};
-            localStorage.setItem('bDate', todayStr);
+        if(day) {
+            Object.keys(constantServices).forEach(s => specSelect.add(new Option(s, s)));
+            if(scheduleData[day]) {
+                Object.keys(scheduleData[day]).forEach(s => specSelect.add(new Option(s, s)));
+            }
         }
-        let count = (dailyCounts[spec] || 0) + 1;
-        dailyCounts[spec] = count;
-        localStorage.setItem('dailyCounts', JSON.stringify(dailyCounts));
+    });
 
-        // عرض النتيجة
-        document.getElementById('res-name').innerText = document.getElementById('pName').value;
-        document.getElementById('res-day').innerText = document.getElementById('bDay').value;
-        document.getElementById('res-doc').innerText = document.getElementById('doctorName').value;
-        document.getElementById('b-num').innerText = count;
-        document.getElementById('success-msg').style.display = 'block';
-    })
-    .catch(err => {
-        alert('حدث خطأ في الاتصال!');
-        document.getElementById('btn').style.display = 'block';
-        document.getElementById('loader').style.display = 'none';
+    // تحديث الأطباء عند تغيير العيادة
+    specSelect.addEventListener('change', function() {
+        const day = daySelect.value;
+        const spec = this.value;
+        docSelect.innerHTML = '<option value="">اختر الطبيب...</option>';
+        
+        let list = constantServices[spec] || (scheduleData[day] ? scheduleData[day][spec] : null);
+        if(list) {
+            list.forEach(d => docSelect.add(new Option(d, d)));
+        }
+    });
+
+    // كود الإرسال للجوجل شيت
+    const form = document.getElementById('booking-form');
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        document.getElementById('btn').style.display = 'none';
+        document.getElementById('loader').style.display = 'block';
+
+        fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+        .then(res => {
+            document.getElementById('loader').style.display = 'none';
+            form.style.display = 'none';
+            
+            // حساب رقم الدور محلياً
+            const spec = specSelect.value;
+            const todayStr = new Date().toLocaleDateString();
+            let dailyCounts = JSON.parse(localStorage.getItem('dailyCounts') || '{}');
+            if (localStorage.getItem('bDate') !== todayStr) {
+                dailyCounts = {};
+                localStorage.setItem('bDate', todayStr);
+            }
+            let count = (dailyCounts[spec] || 0) + 1;
+            dailyCounts[spec] = count;
+            localStorage.setItem('dailyCounts', JSON.stringify(dailyCounts));
+
+            // عرض النتيجة
+            document.getElementById('res-name').innerText = document.getElementById('pName').value;
+            document.getElementById('res-day').innerText = daySelect.value;
+            document.getElementById('res-doc').innerText = docSelect.value;
+            document.getElementById('b-num').innerText = count;
+            document.getElementById('success-msg').style.display = 'block';
+        })
+        .catch(err => {
+            alert('حدث خطأ في الاتصال!');
+            document.getElementById('btn').style.display = 'block';
+            document.getElementById('loader').style.display = 'none';
+        });
     });
 });
+</script>
 </script>
 </script> });
 </script>
