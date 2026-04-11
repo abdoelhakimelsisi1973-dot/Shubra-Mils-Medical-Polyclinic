@@ -119,6 +119,7 @@
 
 <script>
     // رابط جوجل شيت الخاص بك (CSV للقراءة)
+<script>
     const sheetCSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRbnDZjQKUzZQBjvc3b1jD8Jzy8Ndeif51RWrLohsmnKZVEmJrGxSqXS0Q8FlTb5y-M6vHuScw_vlTv/pub?output=csv";
 
     const scheduleData = {
@@ -150,10 +151,6 @@
         }
     }
 
-    window.resetKimoForm = function() {
-        document.getElementById('booking-form').reset();
-    }
-
     document.getElementById('booking-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         document.getElementById('btn').style.display = 'none';
@@ -163,37 +160,41 @@
             const selectedSpec = document.getElementById('specialty').value;
             const selectedDay = document.getElementById('bDay').value;
 
-            // جلب عدد الحجوزات الحالية من جوجل شيت لحساب رقم الدور
+            // جلب البيانات من جوجل شيت لحساب الدور
             const response = await fetch(sheetCSV);
             const data = await response.text();
             const rows = data.split('\n');
             
-            let count = 1;
+            let count = 1; // نبدأ من 1 للمريض الجديد
+            
             rows.forEach(row => {
-                const cols = row.split(',');
-                // البحث عن الحجوزات التي تطابق نفس اليوم والعيادة
-                if(cols[2] && cols[2].trim() === selectedDay && cols[1] && cols[1].trim() === selectedSpec) {
+                const cols = row.split(',').map(c => c.trim().replace(/"/g, ''));
+                
+                // الترتيب في شيت جوجل غالباً يكون:
+                // [0] الوقت | [1] الاسم | [2] العيادة | [3] الطبيب | [4] اليوم
+                const sheetClinic = cols[2]; 
+                const sheetDay = cols[4];
+
+                if(sheetClinic === selectedSpec && sheetDay === selectedDay) {
                     count++;
                 }
             });
 
-            // إظهار رسالة النجاح
+            // إظهار النتيجة للمريض
             document.getElementById('loader').style.display = 'none';
             document.getElementById('booking-form').style.display = 'none';
             document.getElementById('res-name').innerText = document.getElementById('pName').value;
             document.getElementById('b-num').innerText = count;
             document.getElementById('success-msg').style.display = 'block';
 
-            // تنبيه: هنا تحتاج رابط Google Apps Script لإرسال البيانات فعلياً
-            console.log("تم حساب رقم الدور بنجاح من جوجل شيت");
-
         } catch (e) {
             console.error("Error:", e);
-            alert("حدث خطأ في الاتصال بجوجل شيت");
+            alert("حدث خطأ في الاتصال.. حاول مرة أخرى");
             document.getElementById('btn').style.display = 'block';
             document.getElementById('loader').style.display = 'none';
         }
     });
+</script> });
 </script>
 </body>
 </html>
