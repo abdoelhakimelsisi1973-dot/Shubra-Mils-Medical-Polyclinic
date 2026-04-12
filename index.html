@@ -182,11 +182,18 @@
             })
             .then(response => response.json())
             .then(data => {
-                // عرض رقم الحجز في صفحة جديدة
-                const bookingNumber = data.bookingNumber; // تأكد من أن هذا هو الاسم الصحيح للرقم في استجابة جوجل شيت
-                window.open(`booking-confirmation.html?bookingNumber=${bookingNumber}`, '_blank');
+                // تأكد من أن البيانات تحتوي على رقم الحجز
+                if (data.bookingNumber) {
+                    const bookingNumber = data.bookingNumber; // تأكد من أن هذا هو الاسم الصحيح للرقم في استجابة جوجل شيت
+                    window.open(`booking-confirmation.html?bookingNumber=${bookingNumber}`, '_blank');
+                } else {
+                    alert('حدث خطأ، يرجى المحاولة مرة أخرى.');
+                }
             })
-            .catch(error => console.error('Error!', error.message));
+            .catch(error => {
+                console.error('Error!', error.message);
+                alert('حدث خطأ أثناء إرسال البيانات.');
+            });
         });
     });
 
