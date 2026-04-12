@@ -118,8 +118,8 @@
 </div>
 
 <script>
-    // رابط جوجل شيت الخاص بك (API)
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbxuoXQs0h0MzQGJ9ap29c12dnI4mn9jxdPhPq89kL6SfgwVWIGj1waZmU-trH9SXIyobA/exec';
+    // رابط جوجل شيت الخاص بك
+    const sheetUrl = 'https://docs.google.com/spreadsheets/d/1O95IG0tVdh65jHxWRh4rLq-SYBF9YGTnKHrjJmwDYpc/edit?gid=0#gid=0';
 
     // بيانات الخدمات والأطباء
     const constantServices = { 
@@ -175,32 +175,5 @@
             const selectedDoctor = docSelect.value;
 
             // إرسال البيانات إلى Google Sheets
-            fetch(scriptURL, {
+            fetch(sheetUrl, {
                 method: 'POST',
-                body: JSON.stringify({ name: patientName, day: selectedDay, specialty: selectedSpecialty, doctor: selectedDoctor }),
-                headers: { 'Content-Type': 'application/json' }
-            })
-            .then(response => response.json())
-            .then(data => {
-                // تأكد من أن البيانات تحتوي على رقم الحجز
-                if (data.bookingNumber) {
-                    const bookingNumber = data.bookingNumber; // تأكد من أن هذا هو الاسم الصحيح للرقم في استجابة جوجل شيت
-                    window.open(`booking-confirmation.html?bookingNumber=${bookingNumber}`, '_blank');
-                } else {
-                    alert('حدث خطأ، يرجى المحاولة مرة أخرى.');
-                }
-            })
-            .catch(error => {
-                console.error('Error!', error.message);
-                alert('حدث خطأ أثناء إرسال البيانات.');
-            });
-        });
-    });
-
-    function resetKimoForm() {
-        document.getElementById('booking-form').reset();
-        document.getElementById('success-msg').style.display = 'none';
-    }
-</script>
-</body>
-</html>
